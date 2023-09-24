@@ -4,7 +4,7 @@ SpyWare and RansomWare. The project is currently developing…...
 
 
 # Functions
-
+(N/A) -> Not Implemented yet
 ```
                 Aviable Commands:
 
