@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import base64
 import os
+import sys
 import socket
 import ssl
 import tempfile
@@ -8,7 +9,6 @@ import threading
 from colorama import Fore
 import colorama
 from base64 import b64decode
-import sys
 from osGuess import init_guess
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import InMemoryHistory

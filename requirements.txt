@@ -1,0 +1,5 @@
+prompt_toolkit==3.0.14
+colorama==0.4.4
+psutil==5.8.0
+cryptography==41.0.3
+requests==2.31.0
