@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['client\\conection.py'],
+    ['conection.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -28,10 +28,10 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='TestNew',
+    name='TestedNewEnviorment',
     debug=False,
     bootloader_ignore_signals=False,
-    strip=False,
+    strip=True,
     upx=False,
     upx_exclude=[],
     runtime_tmpdir=None,
