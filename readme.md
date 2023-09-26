@@ -60,7 +60,7 @@ hash: 8f361df2687c1d5ac2c9a251ab8903cea2de914305420842b566726926903b5b
 - **¿Por que?**
     
   - Una de las razones es para no tener conflictos y no tener otras librerias al compilar.
-  - Al crearnos un nuevo entono virtual, el .exe estará cargado con las libriras intaladas en ese entorno.
+  - Al crearnos un nuevo entono virtual, el .exe estará cargado con las librerias instaladas en ese entorno.
   - El .exe / .bin pesará de **"30MB"** a **"14MB"**
     
 
