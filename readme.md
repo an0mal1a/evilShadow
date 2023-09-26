@@ -8,43 +8,45 @@ SpyWare. The project is currently developing…...
 ```
                 Aviable Commands:
 
-                    | [!>] download <path> -> Download A File From Target PC
+                    | [!>] download <path>   -> Download A File From Target PC
                     ---------------------------------------------------------
-                    | [!>] startTask       -> Monitoring & kill tasks managers
+                    | [!>] downloadDir <dir> -> Download A File From Target PC
                     ---------------------------------------------------------
-                    | [!>] check           -> Check For Administrator Privileges
+                    | [!>] startTask         -> Monitoring & kill tasks managers
                     ---------------------------------------------------------
-                    | [!>] sysinfo         -> Get System Information
+                    | [!>] check             -> Check For Administrator Privileges
                     ---------------------------------------------------------
-                    | [!>] shell           -> Enter Shell Mode 
+                    | [!>] sysinfo           -> Get System Information
                     ---------------------------------------------------------
-                    | [!>] av              -> Try Detect Anti-Virus
+                    | [!>] shell             -> Enter Shell Mode 
                     ---------------------------------------------------------
-                    | [!>] upload <path>   -> Upload local File To Target PC
+                    | [!>] av                -> Try Detect Anti-Virus
                     ---------------------------------------------------------
-                    | [!>] get <url>       -> Download A File To Target PC From Any Website
+                    | [!>] upload <path>     -> Upload local File To Target PC
                     ---------------------------------------------------------
-                    | [!>] persistence     -> Try to get persistence (needed root)
+                    | [!>] get <url>         -> Download A File To Target PC From Any Website
                     ---------------------------------------------------------
-                    | [!>] lowpersistence  -> Try to get persistence (no root)
+                    | [!>] persistence       -> Try to get persistence (needed root)
                     ---------------------------------------------------------
-                    | [!>] exec <command>  -> Exec command in no shell mode
+                    | [!>] lowpersistence    -> Try to get persistence (no root)
                     ---------------------------------------------------------
-                    | [!>] cryptDir <dir>  -> Crypt a full folder in target
+                    | [!>] exec <command>    -> Exec command in no shell mode
                     ---------------------------------------------------------
-                    | [!>] crypt <file>    -> Crypt a file in target
+                    | [!>] cryptDir <dir>    -> Crypt a full folder in target
                     ---------------------------------------------------------
-                    | [!>] keylog_dump     -> Dump The Keystrokes From Keylogger
+                    | [!>] crypt <file>      -> Crypt a file in target
                     ---------------------------------------------------------
-                    | [!>] screenshot      -> Take a screenshot
+                    | [!>] keylog_dump       -> Dump The Keystrokes From Keylogger
                     ---------------------------------------------------------
-                    | [!>] cryptAll        -> (N/A) Close connex and crypt full system
+                    | [!>] screenshot        -> Take a screenshot
                     ---------------------------------------------------------
-                    | [!>] destruction     -> (N/A) Eliminate all and close conect
+                    | [!>] cryptAll          -> (N/A) Close connex and crypt full system
+                    ---------------------------------------------------------
+                    | [!>] destruction       -> (N/A) Eliminate all and close conect
                     --------------------------------------------------------- 
-                    | [!>] q               -> Suspend the conection
+                    | [!>] q                 -> Suspend the conection
                     ---------------------------------------------------------
-                    | [!>] exit            -> Terminate the conection
+                    | [!>] exit              -> Terminate the conection
                     ---------------------------------------------------------
 ```
 
