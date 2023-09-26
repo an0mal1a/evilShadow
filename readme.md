@@ -48,6 +48,11 @@ SpyWare and RansomWare. The project is currently developing…...
                     ---------------------------------------------------------
 ```
 
+# Detections:
+![image](https://github.com/an0mal1a/evilShadow/assets/129337574/684c71c5-eef2-41f4-bc99-82dd05dbe260)
+hash: 8f361df2687c1d5ac2c9a251ab8903cea2de914305420842b566726926903b5b
+
+
 # Requirements
 
 - ```pip install -r requirements.txt```
@@ -71,13 +76,13 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
   
     - Admin Required:
       
-        `client>pyinstaller --onefile --noconsole --clean --uac-admin --icon=./GoogleChrome.ico -n "Google Chrome" conection.py`
+        `client>pyinstaller --onefile --noconsole --clean --uac-admin -n "Google Chrome" conection.py`
 
     - **NO** Admin Required:
       
-        `client>pyinstaller --onefile --noconsole --clean --icon=./GoogleChrome.ico -n "Google Chrome" conection.py`
+        `client>pyinstaller --onefile --noconsole --clean -n "Google Chrome" conection.py`
 
     ### Linux:
       
-    `client>pyinstaller --onefile --noconsole --clean --icon=./GoogleChrome.ico -n "Google Chrome" conection.py`
+    `client>pyinstaller --onefile --noconsole --clean -n "Google Chrome" conection.py`
 
