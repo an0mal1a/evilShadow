@@ -16,4 +16,4 @@ pynput==1.7.6
 requests==2.31.0
 six==1.16.0
 urllib3==2.0.5
-pyinstaller==6.0.0
+pyinstaller==5.9.0

