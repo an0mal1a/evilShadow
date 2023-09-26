@@ -1,6 +1,6 @@
 # evilShadow
 
-SpyWare and RansomWare. The project is currently developing…...
+SpyWare. The project is currently developing…...
 
 
 # Functions
