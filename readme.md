@@ -60,7 +60,23 @@ hash: 8f361df2687c1d5ac2c9a251ab8903cea2de914305420842b566726926903b5b
 - ```pip install -r requirements.txt```
 
 
+
+## Opcional:
+Para no tener conflictos, nos creamos un nuevo entorno:
+
+- Windows:
+   1. `python -m venv new`
+   2. `.\new\Scripts\activate`
+
+ - Linux:
+   1. `python3 -m venv new`
+   2. `new/bin/activate`
+
+Para salir de este entorno, con el comando **"deactivate"** salimos del enterno nuevo de vuelta al del sistema
+
+
 # Preparación:
+
 
 En el script **Connection.py** en la línea *239* tenemos la línea que crea la conexión. La modificamos a la direccion ip
 del atacante
