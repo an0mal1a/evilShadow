@@ -85,7 +85,7 @@ hash: 8f361df2687c1d5ac2c9a251ab8903cea2de914305420842b566726926903b5b
     
  - Linux:
    1. `python3 -m venv new`
-   2. `new/bin/activate`
+   2. `source new/bin/activate`
 
 PD: Para salir de este entorno, con el comando **"deactivate"** salimos del enterno nuevo de vuelta al del sistema
 
