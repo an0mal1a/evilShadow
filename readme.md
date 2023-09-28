@@ -17,6 +17,8 @@ RECUERDA: Este repositorio es para el aprenzidaje y educación, no me hago respo
 ```
                 Aviable Commands:
 
+                    | [!>] downloadDir <path> -> Download A full dir
+                    ---------------------------------------------------------
                     | [!>] download <path> -> Download A File From Target PC
                     ---------------------------------------------------------
                     | [!>] startTask       -> Monitoring & kill tasks managers

