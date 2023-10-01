@@ -163,6 +163,10 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
     - Con el comando "Download" podemos descargarnos archivos de la máquina remota
       - `download /home/supervisor/Desktop/Passwords.txt`
 
+  - **downloadDir**
+    - Con el comando "downloadDir" podemos descargarnos la estructura completa de la carpeta
+      - `downloadDir /home/supervisor/Desktop/UsersData`
+
 
   - **startTask**
     - Con este comando pones a ejecutarse la detección de adminitradores de tareas (windows/linux)
