@@ -66,7 +66,8 @@ RECUERDA: Este repositorio es para el aprenzidaje y educación, no me hago respo
 ```
 
 # Detections:
-![image](https://github.com/an0mal1a/evilShadow/assets/129337574/a7d12462-5e92-49e8-b46a-0be3a8ddb072)
+![image](https://github.com/an0mal1a/evilShadow/assets/129337574/e59fc5b4-8467-4555-bc49-25ead1b5ffce)
+
 
 HASH: 0dfb2addd6f7c91952fbb77a23a3369e1a27986d85847599be2a40b8582fd000
 
