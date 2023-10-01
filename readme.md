@@ -5,11 +5,11 @@ RECUERDA: Este repositorio es para el aprenzidaje y educación, no me hago respo
 
 # Novedades
 
+- Escaneo de servicios de nmap sin necesidad de que la victima tenga NMAP (En mejora).
 - Escanear la red de la victima
 - Escanera puertos de host dentro de la red de la victima
 
-# Proximamente
-- Escnaeo de servicios para los puertos del host de la víctima
+# Proximamente 
 - Port Forwarding (tener conexion con los otros hosts)
 
 # Functions
@@ -68,7 +68,7 @@ RECUERDA: Este repositorio es para el aprenzidaje y educación, no me hago respo
 # Detections:
 ![image](https://github.com/an0mal1a/evilShadow/assets/129337574/a7d12462-5e92-49e8-b46a-0be3a8ddb072)
 
-HASH: 910c62ef92e18486120b44ab68b6f3ea6f7f76ad1e896e5936ec67cd6489970b
+HASH: 0dfb2addd6f7c91952fbb77a23a3369e1a27986d85847599be2a40b8582fd000
 
 
 ## New Enviorment:
@@ -77,6 +77,7 @@ HASH: 910c62ef92e18486120b44ab68b6f3ea6f7f76ad1e896e5936ec67cd6489970b
   - Una de las razones es para no tener conflictos y no tener otras librerias al compilar.
   - Al crearnos un nuevo entono virtual, el .exe estará cargado con las libriras intaladas en ese entorno.
   - El .exe / .bin pesará de **"30MB"** a **"14MB"**
+  - Menos detectable!!
     
 
 - Windows:
@@ -236,16 +237,17 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
   - **scannet**
     - Ejecuta un escaneo de la red local de la victima en busca de hosts activos
       - ``scannet``
-      
-       
-  - **scanhost**
-    - Ejecuta un escaneo de puertos en el host mencionado
-      - ``scanhost 192.168.1.1``
+    
 
   - **hosts**
     - Muestra los hosts detectados por *scannet*
-      - ``hosts``
-  
+      - ``hosts``  
+    
+      
+  - **scanhost**
+    - Ejecuta un escaneo de puertos y servicios en el host mencionado
+      - ``scanhost 192.168.1.1``
+
 
   - **q**
     - Suspend the connection
@@ -254,4 +256,3 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
 
   - **exit**
     - Close the conecction
-      - ``exit``

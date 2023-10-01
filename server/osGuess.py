@@ -54,8 +54,7 @@ def init_guess(ip):
 
 if __name__ == "__main__":
     try:
-        #ip_address = sys.argv[1]
-        ip_address = "192.168.131.37"
+        ip_address = sys.argv[1]
 
         ttl = get_ttl(ip_address)
 

@@ -1,3 +1,4 @@
+nmap_vscan_fix==1.1.5
 prompt_toolkit==3.0.14
 colorama==0.4.4 
 cryptography==41.0.3
