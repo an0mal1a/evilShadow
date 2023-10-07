@@ -71,6 +71,11 @@
 
 # Requirements
 
+- Microsoft Visual C++ 14.0 or greater
+  - https://visualstudio.microsoft.com/visual-cpp-build-tools
+    ![image](https://github.com/an0mal1a/evilShadow/assets/129337574/dcb0d725-15c4-4453-b5c4-4b295a38fedc)
+
+
 Automated:
 
 - ```pip install -r requirements.txt```
