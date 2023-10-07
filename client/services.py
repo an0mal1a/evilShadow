@@ -1,6 +1,6 @@
 import base64
 
-def returnData():
+def returnValue():
     serviceInfo = """
 IyBObWFwIHNlcnZpY2UgZGV0ZWN0aW9uIHByb2JlIGxpc3QgLSotIG1vZGU6IGZ1bmRhbWVudGFs
 OyAtKi0KIyAkSWQkCiMKIyBUaGlzIGlzIGEgZGF0YWJhc2Ugb2YgY3VzdG9tIHByb2JlcyBhbmQg
@@ -44092,8 +44092,9 @@ eGE1XHg4Nlx4YjJceDc1XHg0Ylx4OTlceGFhXHgzMlx4NTh8CnJhcml0eSA5CnBvcnRzIDMxMzM3
 ClByb2JlIFVEUCBUUklOMDBfV0lOX1BJTkcgcXxwbmcgW10uLktzfApyYXJpdHkgOQpwb3J0cyAz
 NDU1NQpQcm9iZSBVRFAgQkVDS0hPRkZfQURTIHF8XHgwM1x4NjZceDE0XHg3MVwwXDBcMFwwXHgw
 MVwwXDBcMFwwXDBcMFwwXHgwMVx4MDFceDEwXHgyN1wwXDBcMFwwfApyYXJpdHkgOApwb3J0cyA0
-ODg5OQo=""".encode("utf-8")
+ODg5OQo="""
     return base64.b64decode(serviceInfo)
+
 
 
 

