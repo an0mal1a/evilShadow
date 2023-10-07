@@ -17,7 +17,6 @@ def get_ttl(ip_address):
             out = out[12].decode()
         else:
             out = out[14].decode()
-
         ttl = re.findall(r"\d{1,3}", out)[0]
 
         return ttl

