@@ -426,3 +426,5 @@ TODOS LOS COMANDOS QUE NO CAMBIA EL OUTPUT SE GUARDAN EN CACHE.
 
   - **exit**
     - Close the conecction
+
+For suggeriments or problems to fix --> https://github.com/an0mal1a/evilShadow/issues
