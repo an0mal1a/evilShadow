@@ -104,7 +104,8 @@ Automated:
         pyinstaller --onefile --noconsole --noupx --strip --clean -n ObfusquedTest conection-obf.py
 
 #### Virus Total Obfuscated Restults:
-![image](https://github.com/an0mal1a/evilShadow/assets/129337574/df00dc72-9c5d-4892-9f9b-aea19e6f8015)
+![image](https://github.com/an0mal1a/evilShadow/assets/129337574/28f91103-7cc8-44e4-b305-24706ec77fa5)
+
 
 
 Hash: 45f0a24a39f58cb3b9f01c9bf8923e664d50e96be26faeab683b6bf6773d4152
@@ -113,7 +114,8 @@ Hash: 45f0a24a39f58cb3b9f01c9bf8923e664d50e96be26faeab683b6bf6773d4152
 
 
 #### Virus Total **NO** Obfuscated Restults:
-![image](https://github.com/an0mal1a/evilShadow/assets/129337574/9448359a-07b2-4f05-acb4-2b40b381dc1f)
+![image](https://github.com/an0mal1a/evilShadow/assets/129337574/437944d4-c060-4ef8-8b44-beca7a787458)
+
 
 
 HASH: a7538bf2b24885f46f8aa2532a370eb9aa35f2a2650a8b2f6f25b0cca00aab29
