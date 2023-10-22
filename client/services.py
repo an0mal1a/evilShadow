@@ -1,3 +1,4 @@
+#cython: lenguage_level=3
 import base64
 
 def returnValue():

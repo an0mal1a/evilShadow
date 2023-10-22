@@ -5,6 +5,7 @@ cryptography==41.0.3
 requests==2.31.0
 pynput==1.7.6
 certifi==2023.7.22
+cython==3.0.4
 cffi==1.15.1
 charset-normalizer==3.2.0 
 idna==3.4
@@ -14,5 +15,5 @@ pycparser==2.21
 requests==2.31.0
 six==1.16.0
 urllib3==2.0.5
-pyinstaller==5.9.0
-
+pyinstaller
+cython
